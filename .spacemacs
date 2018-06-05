@@ -35,7 +35,7 @@ values."
       :variables
       latex-enable-auto-fill t
       latex-enable-magic t)
-		 ;; gtd loads the org layer and implements GTD in org.
+		 ;; gtd loads and initializes the org layer in its own layers.el and implements GTD in org.
      (gtd
       :variables
       org-directory "~/Documentos/GTD"
@@ -43,19 +43,16 @@ values."
       '((nil :maxlevel . 9)
         (org-agenda-files :maxlevel . 9)
         ("~/Documentos/Birman/tweets.org" :maxlevel . 2)))
-
      (javascript
       :variables
       javascript-disable-tern-port-files nil
       web-beautify-js-program "/usr/bin/js_beautify.pl")
-
      (python
       :variables
       python-shell-interpreter "jupyter"
       python-shell-interpreter-args "console --simple-prompt"
       ;; python-shell-interpreter-args ""
       )
-
      (ipython-notebook
 			;; :variables
 			;; python-shell-interpreter "jupyter"
@@ -382,7 +379,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (pynt yasnippet-snippets yapfify xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo toc-org symon string-inflection spaceline-all-the-icons smeargle smart-tabs-mode shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-ipython neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags geiser fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav ein editorconfig dumb-jump diff-hl define-word cython-mode counsel-projectile counsel-gtags company-tern company-statistics company-shell company-auctex company-anaconda column-enforce-mode coffee-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent add-node-modules-path adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (magit-svn evil-goggles yaml-mode powerline spinner org-plus-contrib markdown-mode jedi-core python-environment epc ctable concurrent hydra parent-mode projectile gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck pkg-info epl flx magit magit-popup git-commit ghub let-alist with-editor smartparens iedit anzu evil goto-chg undo-tree highlight skewer-mode request-deferred websocket request deferred js2-mode simple-httpd dash-functional company bind-map bind-key yasnippet packed auctex anaconda-mode pythonic f dash s helm avy helm-core async auto-complete popup web-beautify pynt livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js-doc company-tern tern coffee-mode yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo toc-org spaceline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint jedi insert-shebang indent-guide hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flyspell-correct-helm flycheck-pos-tip flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav ein dumb-jump diminish diff-hl define-word cython-mode company-statistics company-shell company-auctex company-anaconda column-enforce-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
