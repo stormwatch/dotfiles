@@ -34,39 +34,7 @@ This function should only modify configuration layer settings."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     (latex
-      :variables
-      latex-enable-auto-fill t
-      latex-enable-magic t)
-		 ;; gtd loads and initializes the org layer in its own layers.el and implements GTD in org.
-     ;; (gtd
-     ;;  :variables
-     ;;  org-directory "~/Documentos/GTD"
-     ;;  org-refile-targets
-     ;;  '((nil :maxlevel . 9)
-     ;;    (org-agenda-files :maxlevel . 9)
-     ;;    ("~/Documentos/Birman/tweets.org" :maxlevel . 2)
-     ;; 				("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2)))
-     (javascript
-      :variables
-      javascript-disable-tern-port-files nil
-      web-beautify-js-program "/usr/bin/js_beautify.pl")
-     (python
-      :variables
-      python-shell-interpreter "jupyter"
-      python-shell-interpreter-args "console --simple-prompt"
-      ;; python-shell-interpreter-args ""
-      )
-     (ipython-notebook
-			;; :variables
-			;; python-shell-interpreter "jupyter"
-			;; python-shell-interpreter-args "console --simple-prompt"
-			)
-		 scheme
-     shell-scripts
-     (typography :variables typography-enable-typographic-editing t)
-		 yaml
-		 ;; ----------------------------------------------------------------
+     ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
@@ -80,7 +48,6 @@ This function should only modify configuration layer settings."
 		 neotree
 		 ;; org should be loaded from the gtd private layer
      (shell :variables
-						explicit-shell-file-name "/usr/bin/fish"
             shell-default-height 30
             shell-default-position 'bottom)
      (spell-checking
@@ -90,20 +57,68 @@ This function should only modify configuration layer settings."
       ;; ispell-really-aspell t
       )
      syntax-checking
-     version-control
+     (version-control :variables
+											version-control-diff-tool 'diff-hl)
+		 ;; End of Spacemacs suggested useful layers block.
+		 csv
+		 finance
+		 ;; gtd layer declares the org layer as a dependency in its own layers.el and implements GTD in org.
+		 ;;(
+		 gtd
+		 ;; :variables
+		 ;; gtd-base-path "~/Documentos/GTD/"
+		 ;; org-directory "~/Documentos/GTD"
+		 ;;  org-refile-targets
+		 ;;  '((nil :maxlevel . 9)
+		 ;;   (org-agenda-files :maxlevel . 9)
+		 ;;   ("~/Documentos/Birman/tweets.org" :maxlevel . 2)
+		 ;;	("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2))
+		 ;;)
+		 html
+     (javascript
+      :variables
+      javascript-disable-tern-port-files nil
+      web-beautify-js-program "/usr/bin/js_beautify.pl")
+     (latex
+      :variables
+      latex-enable-auto-fill t
+      latex-enable-magic t)
+ 		 nginx
+		 php
+     (python
+      :variables
+      python-shell-interpreter "jupyter"
+      python-shell-interpreter-args "console --simple-prompt"
+      ;; python-shell-interpreter-args ""
+      )
+     (ipython-notebook
+			;; :variables
+			;; python-shell-interpreter "jupyter"
+			;; python-shell-interpreter-args "console --simple-prompt"
+			)
+		 react
+		 scheme
+     shell-scripts
+		 sql
+		 systemd
+		 tmux
+     (typography :variables typography-enable-typographic-editing t)
+		 yaml
      )
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-	 ;; To use a local version of a package, use the `:location' property:
+   ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
                                       jedi
                                       jedi-core
 																			pynt
+																			(user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :files ("user-directories/*.el")))
+																			;;user-directories :location "~/.emacs.d/private/local/user-directories/"
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -496,6 +511,12 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+	(spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
+	;; (use-package user-directories
+	;; 	:defer t
+	;; 	:load-path "~/.emacs.d/private/local/user-directories/user-directories"
+	;; 	:init (load-library "setup-user-directories")
+	;; 	)
 	(use-package smart-tabs-mode
     :defer t
     :config (smart-tabs-insinuate 'c 'c++ 'java 'javascript 'cperl 'python 'ruby 'nxml)
@@ -503,13 +524,13 @@ before packages are loaded."
   (spacemacs|use-package-add-hook org
     :post-config
     (add-to-list 'org-babel-load-languages
-                 '((ditaa . t)
-                   (gnuplot . t)
+                 '(
+									 ;;(ditaa . t)
                    (latex . t)
-                   (lilypond .t)
-                   (lisp . t)
-                   (org . t))))
-	(global-auto-complete-mode +1)
+                   (lilypond . t)
+                   ;;(lisp . t)
+                   ;;(org . t)
+									 )))
 	(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
   )
 
@@ -527,7 +548,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (gitignore-templates yaml-mode powerline spinner org-plus-contrib markdown-mode jedi-core python-environment epc ctable concurrent hydra parent-mode projectile gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck pkg-info epl flx magit magit-popup git-commit ghub let-alist with-editor smartparens iedit anzu evil goto-chg undo-tree highlight skewer-mode request-deferred websocket request deferred js2-mode simple-httpd dash-functional company bind-map bind-key yasnippet packed auctex anaconda-mode pythonic f dash s helm avy helm-core async auto-complete popup web-beautify pynt livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js-doc company-tern tern coffee-mode yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo toc-org spaceline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint jedi insert-shebang indent-guide hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flyspell-correct-helm flycheck-pos-tip flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav ein dumb-jump diminish diff-hl define-word cython-mode company-statistics company-shell company-auctex company-anaconda column-enforce-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (prettier-js yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen user-directories use-package unfill typo toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pynt pyenv-mode py-isort pug-mode popwin pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-ipython nginx-mode neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode dotenv-mode diminish diff-hl define-word cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda column-enforce-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -535,19 +556,3 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  )
 )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (yaml-mode powerline spinner org-plus-contrib markdown-mode jedi-core python-environment epc ctable concurrent hydra parent-mode projectile gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck pkg-info epl flx magit magit-popup git-commit ghub let-alist with-editor smartparens iedit anzu evil goto-chg undo-tree highlight skewer-mode request-deferred websocket request deferred js2-mode simple-httpd dash-functional company bind-map bind-key yasnippet packed auctex anaconda-mode pythonic f dash s helm avy helm-core async auto-complete popup web-beautify pynt livid-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js-doc company-tern tern coffee-mode yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo toc-org spaceline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint jedi insert-shebang indent-guide hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flyspell-correct-helm flycheck-pos-tip flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav ein dumb-jump diminish diff-hl define-word cython-mode company-statistics company-shell company-auctex company-anaconda column-enforce-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
