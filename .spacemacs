@@ -63,17 +63,14 @@ This function should only modify configuration layer settings."
 		 csv
 		 finance
 		 ;; gtd layer declares the org layer as a dependency in its own layers.el and implements GTD in org.
-		 ;;(
-		 gtd
-		 ;; :variables
-		 ;; gtd-base-path "~/Documentos/GTD/"
-		 ;; org-directory "~/Documentos/GTD"
-		 ;;  org-refile-targets
-		 ;;  '((nil :maxlevel . 9)
-		 ;;   (org-agenda-files :maxlevel . 9)
-		 ;;   ("~/Documentos/Birman/tweets.org" :maxlevel . 2)
-		 ;;	("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2))
-		 ;;)
+		 (gtd :variables
+					gtd-base-path "~/Documentos/GTD/"
+					;;  org-refile-targets
+					;;  '((nil :maxlevel . 9)
+					;; (org-agenda-files :maxlevel . 9)
+					;; ("~/Documentos/Birman/tweets.org" :maxlevel . 2)
+					;; ("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2))
+					)
 		 html
      (javascript
       :variables
@@ -116,9 +113,9 @@ This function should only modify configuration layer settings."
    dotspacemacs-additional-packages '(
                                       jedi
                                       jedi-core
-																			pynt
-																			(user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :files ("user-directories/*.el")))
-																			;;user-directories :location "~/.emacs.d/private/local/user-directories/"
+				      pynt
+				      ;; (user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :branch "stormwatch" :files ("user-directories/*.el")))
+				      ;; user-directories :location "~/.emacs.d/private/local/user-directories/"
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -548,7 +545,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (prettier-js yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen user-directories use-package unfill typo toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pynt pyenv-mode py-isort pug-mode popwin pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-ipython nginx-mode neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode dotenv-mode diminish diff-hl define-word cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda column-enforce-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (impatient-mode counsel-projectile counsel ivy ein yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key websocket web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo toc-org tagedit systemd symon swiper string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode restart-emacs request-deferred rainbow-delimiters pyvenv pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-ipython nginx-mode neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode dotenv-mode doom-modeline diminish diff-hl define-word cython-mode csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda column-enforce-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
