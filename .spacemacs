@@ -48,6 +48,7 @@ This function should only modify configuration layer settings."
 		 neotree
 		 ;; org is now loaded from my GTD private layer which declares the org layer as a dependency in its own layers.el and implements GTD in org.
 		 (gtd :variables
+					org-enable-org-journal-support t
 					gtd-base-path "~/Documentos/GTD/"
 					org-refile-targets
 					'((nil :maxlevel . 9)
@@ -66,6 +67,7 @@ This function should only modify configuration layer settings."
      (version-control :variables
 		 									version-control-diff-tool 'diff-hl)
 		 ;; End of Spacemacs suggested useful layers block.
+		 common-lisp
 		 csv
 		 finance
 		 html
@@ -514,28 +516,20 @@ before packages are loaded."
 	;; 	)
   (spacemacs|use-package-add-hook org
     :post-config
-    (add-to-list 'org-babel-load-languages
-                 '(
-									 (ditaa . t)
-                   (latex . t)
-                   (lilypond . t)
-                   (lisp . t)
-                   (org . t)
-									 )))
-	;; (use-package org-expiry
-  ;;   :defer t
-  ;;   :config
-  ;;   (progn
-  ;;     (setq org-expiry-inactive-timestamps t)
-  ;;     (org-expiry-insinuate)))
+		(nconc org-babel-load-languages
+					 '((ditaa . t)
+						 (latex . t)
+						 (lilypond . t)
+						 (lisp . t)
+						 (org . t))))
 	(use-package org-table
     :defer t
     :config
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
-	(use-package smart-tabs-mode
-    :defer t
-    :config (smart-tabs-insinuate 'c 'c++ 'java 'javascript 'cperl 'python 'ruby 'nxml)
-    :custom (indent-tabs-mode t))
+	;; (use-package smart-tabs-mode
+  ;;   :defer t
+  ;;   :config (smart-tabs-insinuate 'c 'c++ 'java 'javascript 'cperl 'python 'ruby 'nxml)
+  ;;   :custom (indent-tabs-mode t))
 	(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
   )
 
@@ -553,7 +547,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yapfify pyvenv pytest pyenv-mode py-isort pippel pipenv pip-requirements live-py-mode importmagic helm-pydoc cython-mode company-anaconda anaconda-mode pythonic yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo toc-org tagedit systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode restart-emacs rainbow-delimiters pynt pug-mode prettier-js popwin phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nginx-mode neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode dotenv-mode doom-modeline diminish diff-hl define-word csv-mode counsel-projectile company-web company-tern company-statistics company-shell company-php company-auctex column-enforce-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (yasnippet-snippets toc-org rjsx-mode org-mime org-download impatient-mode htmlize google-translate flyspell-correct-helm flyspell-correct evil-mc evil-matchit evil-escape editorconfig dumb-jump doom-modeline counsel-projectile counsel ivy ac-php-core iedit ledger-mode smartparens window-purpose helm multiple-cursors avy projectile magit git-commit ghub treepy graphql yasnippet pythonic ein company slime dash evil org-plus-contrib hydra yapfify yaml-mode xterm-color xcscope ws-butler with-editor winum which-key websocket web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill undo-tree typo tagedit systemd symon swiper string-inflection sql-indent spaceline-all-the-icons smeargle slime-company slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs request-deferred rainbow-delimiters pyvenv pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-journal org-bullets org-brain open-junk-file nginx-mode neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic imenu-list hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag goto-chg golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval drupal-mode dotenv-mode diminish diff-hl define-word cython-mode csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
