@@ -48,7 +48,8 @@ This function should only modify configuration layer settings."
 		 neotree
 		 ;; org is now loaded from my GTD private layer which declares the org layer as a dependency in its own layers.el and implements GTD in org.
 		 (gtd :variables
-					org-enable-org-journal-support t
+					;; org-enable-org-journal-support t
+					;; org-journal-dir "~/Documentos/Birman/journal"
 					gtd-base-path "~/Documentos/GTD/"
 					org-refile-targets
 					'((nil :maxlevel . 9)
