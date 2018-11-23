@@ -51,6 +51,23 @@ This function should only modify configuration layer settings."
 					;; org-enable-org-journal-support t
 					;; org-journal-dir "~/Documentos/Birman/journal"
 					gtd-base-path "~/Documentos/GTD/"
+          org-enable-hugo-support t
+          org-export-with-date nil
+          org-html-html5-fancy t
+          org-publish-project-alist
+          '(("AntiquaNova"
+             :base-directory "~/Antiquæ Novæ/git"
+             :exclude "datos"
+             :recursive t
+             :publishing-function org-html-publish-to-html
+             :publishing-directory "~/Documentos/Antiquæ Novæ/html"
+             :with-author nil
+             :with-toc nil
+             :with-properties nil
+             :with-tags nil
+             :section-numbers nil
+             :html-html5-fancy t
+             ))
 					org-refile-targets
 					'((nil :maxlevel . 9)
 						(org-agenda-files :maxlevel . 9)
@@ -95,6 +112,7 @@ This function should only modify configuration layer settings."
 		 ;; 	)
 		 python
 		 react
+     rust
 		 scheme
      shell-scripts
 		 sql
@@ -112,6 +130,9 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
+                                      ob-translate
+                                      (org-multilingual :location "~/.emacs.d/private/local/org-multilingual/")
+                                      ox-extra
                                       jedi
                                       jedi-core
 																			pynt
@@ -546,9 +567,10 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets toc-org rjsx-mode org-mime org-download impatient-mode htmlize google-translate flyspell-correct-helm flyspell-correct evil-mc evil-matchit evil-escape editorconfig dumb-jump doom-modeline counsel-projectile counsel ivy ac-php-core iedit ledger-mode smartparens window-purpose helm multiple-cursors avy projectile magit git-commit ghub treepy graphql yasnippet pythonic ein company slime dash evil org-plus-contrib hydra yapfify yaml-mode xterm-color xcscope ws-butler with-editor winum which-key websocket web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill undo-tree typo tagedit systemd symon swiper string-inflection sql-indent spaceline-all-the-icons smeargle slime-company slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs request-deferred rainbow-delimiters pyvenv pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-journal org-bullets org-brain open-junk-file nginx-mode neotree nameless mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic imenu-list hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag goto-chg golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval drupal-mode dotenv-mode diminish diff-hl define-word cython-mode csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode browse-at-remote bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (ob-translate yasnippet-snippets winum web-mode toc-org sql-indent pip-requirements paradox org-mime neotree mwim hl-todo helm-make git-link geiser evil-matchit editorconfig doom-modeline company-php ac-php-core company-anaconda anaconda-mode ace-link tern counsel ivy iedit ledger-mode smartparens flyspell-correct helm helm-core jedi-core markdown-mode projectile magit git-commit ghub with-editor yasnippet ein company slime which-key use-package hydra evil org-plus-contrib yapfify yaml-mode xterm-color xcscope ws-butler websocket web-beautify volatile-highlights vi-tilde-fringe uuidgen unfill undo-tree typo treepy toml-mode tagedit systemd symon swiper string-inflection spinner spaceline-all-the-icons smeargle slime-company slim-mode shrink-path shell-pop scss-mode sass-mode rjsx-mode restart-emacs request-deferred rainbow-delimiters racer pyvenv python-environment pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator ox-hugo overseer orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file nginx-mode nameless multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql goto-chg google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval dumb-jump drupal-mode dotenv-mode diminish diff-hl define-word cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-shell company-auctex common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode cargo browse-at-remote bind-key bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
