@@ -45,60 +45,54 @@ This function should only modify configuration layer settings."
      emacs-lisp
      git
      markdown
-		 neotree
-		 ;; org is now loaded from my GTD private layer which declares the org layer as a dependency in its own layers.el and implements GTD in org.
-		 (gtd :variables
-					;; org-enable-org-journal-support t
-					;; org-journal-dir "~/Documentos/Birman/journal"
-					gtd-base-path "~/Documentos/GTD/"
-          org-enable-hugo-support t
+     multiple-cursors
+     treemacs
+     ;; org is now loaded from my GTD private layer which declares the org layer as a dependency in its own layers.el and implements GTD in org.
+     (gtd :variables
+          ;; org-enable-org-journal-support t
+          ;; org-journal-dir "~/Documentos/Birman/journal"
+          gtd-base-path "~/Documentos/GTD/"
           org-export-with-date nil
           org-html-html5-fancy t
-          org-publish-project-alist
-          '(("AntiquaNova"
-             :base-directory "~/Antiquæ Novæ/git"
-             :exclude "datos"
-             :recursive t
-             :publishing-function org-html-publish-to-html
-             :publishing-directory "~/Documentos/Antiquæ Novæ/html"
-             :with-author nil
-             :with-toc nil
-             :with-properties nil
-             :with-tags nil
-             :section-numbers nil
-             :html-html5-fancy t
-             ))
-					org-refile-targets
-					'((nil :maxlevel . 9)
-						(org-agenda-files :maxlevel . 9)
-						(org-agenda-diary-file :maxlevel . 2)
-						("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2))
-					)
+          org-refile-targets
+          '((nil :maxlevel . 9)
+            (org-agenda-files :maxlevel . 9)
+            (org-agenda-diary-file :maxlevel . 2)
+            ("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2)))
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
      (spell-checking :variables
-										 spell-checking-enable-auto-dictionary t
-										 spell-checking-enable-by-default nil
-										 ispell-really-aspell t)
+                     spell-checking-enable-auto-dictionary t
+                     spell-checking-enable-by-default nil
+                     ispell-really-aspell t)
      syntax-checking
      (version-control :variables
-		 									version-control-diff-tool 'diff-hl)
-		 ;; End of Spacemacs suggested useful layers block.
-		 common-lisp
-		 csv
-		 finance
-		 html
+                      version-control-diff-tool 'diff-hl)
+     ;; End of Spacemacs suggested useful layers block.
+     bibtex
+     common-lisp
+     csv
+     (dash
+      :variables
+      helm-dash-docset-newpath "~/.local/share/Zeal/Zeal/docsets"
+      helm-dash-browser-func 'eww)
+     finance
+     html
      (javascript
       :variables
-      javascript-disable-tern-port-files nil
-      web-beautify-js-program "/usr/bin/js_beautify.pl")
+      javascript-backend 'lsp
+      javascript-fmt-tool 'prettier
+      ;; javascript-disable-tern-port-files nil
+      ;; web-beautify-js-program "/usr/bin/js_beautify.pl"
+      )
      (latex
       :variables
       latex-enable-auto-fill t
       latex-enable-magic t)
- 		 nginx
-		 php
+     lsp
+     nginx
+     php
      ;; (python
      ;;  :variables
      ;;  python-shell-interpreter "jupyter"
@@ -106,20 +100,20 @@ This function should only modify configuration layer settings."
      ;;  ;; python-shell-interpreter-args ""
      ;;  )
      ;; (ipython-notebook
-		 ;; 	;; :variables
-		 ;; 	;; python-shell-interpreter "jupyter"
-		 ;; 	;; python-shell-interpreter-args "console --simple-prompt"
-		 ;; 	)
-		 python
-		 react
+     ;;   ;; :variables
+     ;;   ;; python-shell-interpreter "jupyter"
+     ;;   ;; python-shell-interpreter-args "console --simple-prompt"
+     ;;   )
+     python
+     react
      rust
-		 scheme
+     scheme
      shell-scripts
-		 sql
-		 systemd
-		 tmux
+     sql
+     systemd
+     tmux
      (typography :variables typography-enable-typographic-editing t)
-		 yaml
+     yaml
      )
 
    ;; List of additional packages that will be installed without being
@@ -130,14 +124,20 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
+                                      eslintd-fix
                                       ob-translate
+                                      (org-attach :location built-in)
+                                      org-board
+                                      org-download
                                       (org-multilingual :location "~/.emacs.d/private/local/org-multilingual/")
-                                      ox-extra
+                                      (org-protocol :location built-in)
+                                      multicolumn
+                                      (ox-extra :location built-in)
                                       jedi
                                       jedi-core
-																			pynt
-																			;; (user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :branch "stormwatch" :files ("user-directories/*.el")))
-																			;; user-directories :location "~/.emacs.d/private/local/user-directories/"
+                                      pynt
+                                      ;; (user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :branch "stormwatch" :files ("user-directories/*.el")))
+                                      ;; user-directories :location "~/.emacs.d/private/local/user-directories/"
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -530,29 +530,78 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-	(spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
-	;; (use-package user-directories
-	;; 	:defer t
-	;; 	:load-path "~/.emacs.d/private/local/user-directories/user-directories"
-	;; 	:init (load-library "setup-user-directories")
-	;; 	)
+  (ido-mode -1)
+  (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
+  ;; (use-package user-directories
+  ;;  :defer t
+  ;;  :load-path "~/.emacs.d/private/local/user-directories/user-directories"
+  ;;  :init (load-library "setup-user-directories")
+  ;;  )
+  (use-package eslintd-fix
+    :defer t
+    :config
+    (progn
+      (add-hook 'js2-mode-hook 'eslintd-fix-mode)))
+  (use-package flycheck
+    :defer t
+    :custom
+    ((flycheck-javascript-eslint-executable "eslint_d")))
   (spacemacs|use-package-add-hook org
     :post-config
-		(nconc org-babel-load-languages
-					 '((ditaa . t)
-						 (latex . t)
-						 (lilypond . t)
-						 (lisp . t)
-						 (org . t))))
-	(use-package org-table
+    (nconc org-babel-load-languages
+           '((ditaa . t)
+             (js . t)
+             (latex . t)
+             (lilypond . t)
+             (lisp . t)
+             (org . t))))
+  (use-package org-faces
+    :defer t
+    :config
+    (progn
+      (set-face-attribute 'org-link nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+      ;; (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-date nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-special-keyword nil :inherit 'fixed-pitch)))
+  (use-package org-attach
+    :defer t
+    :custom
+    (org-attach-directory "~/Antiquæ Novæ/personas")
+    (org-attach-git-commit nil))
+  (use-package org-board
+    :defer t
+    :config
+    (progn
+      (defun do-org-board-dl-hook ()
+        (when (equal (buffer-name)
+                     (concat "CAPTURE-" org-board-capture-file))
+          (org-board-archive)))
+      (add-hook 'org-capture-before-finalize-hook 'do-org-board-dl-hook)
+      (with-eval-after-load 'org-capture
+        (defvar org-board-capture-file "my-org-board.org" "Default org-board file for captures")
+        (push `("c" "capture through org protocol" entry
+                (file+headline ,org-board-capture-file "Unsorted")
+                "* %?%:description\n:PROPERTIES:\n:URL: %:link\n:END:\n\n Added %U") org-capture-templates))
+      (global-set-key (kbd "C-c o") org-board-keymap)))
+  (use-package org-table
     :defer t
     :config
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
-	;; (use-package smart-tabs-mode
+  (use-package table
+    :defer t
+    :config
+    (set-face-attribute 'table-cell nil :inherit 'fixed-pitch))
+  (use-package org-download
+    :defer t
+    :custom
+    ((org-download-method 'attach)
+     (org-download-image-dir "~/Imágenes")))
+  ;; (use-package smart-tabs-mode
   ;;   :defer t
   ;;   :config (smart-tabs-insinuate 'c 'c++ 'java 'javascript 'cperl 'python 'ruby 'nxml)
   ;;   :custom (indent-tabs-mode t))
-	(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+  (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -568,9 +617,14 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
+ '(flycheck-javascript-eslint-executable "eslint_d")
+ '(org-attach-directory "~/Antiquæ Novæ/personas" t)
+ '(org-attach-git-commit nil t)
+ '(org-download-image-dir "~/Imágenes")
+ '(org-download-method (quote attach))
  '(package-selected-packages
    (quote
-    (ob-translate yasnippet-snippets winum web-mode toc-org sql-indent pip-requirements paradox org-mime neotree mwim hl-todo helm-make git-link geiser evil-matchit editorconfig doom-modeline company-php ac-php-core company-anaconda anaconda-mode ace-link tern counsel ivy iedit ledger-mode smartparens flyspell-correct helm helm-core jedi-core markdown-mode projectile magit git-commit ghub with-editor yasnippet ein company slime which-key use-package hydra evil org-plus-contrib yapfify yaml-mode xterm-color xcscope ws-butler websocket web-beautify volatile-highlights vi-tilde-fringe uuidgen unfill undo-tree typo treepy toml-mode tagedit systemd symon swiper string-inflection spinner spaceline-all-the-icons smeargle slime-company slim-mode shrink-path shell-pop scss-mode sass-mode rjsx-mode restart-emacs request-deferred rainbow-delimiters racer pyvenv python-environment pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el password-generator ox-hugo overseer orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file nginx-mode nameless multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql goto-chg google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-magit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval dumb-jump drupal-mode dotenv-mode diminish diff-hl define-word cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-shell company-auctex common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode cargo browse-at-remote bind-key bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-jump-helm-line ac-ispell))))
+    (zeal-at-point helm-dash treemacs-projectile treemacs-evil treemacs pfuture lv tide typescript-mode lsp-ui company-lsp lsp-mode ht eslintd-fix yasnippet-snippets web-mode slime-company slime rjsx-mode racer pyvenv phpcbf ox-hugo orgit org-ref pdf-tools org-download org-brain live-py-mode hl-todo helm-bibtex parsebib eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu eshell-prompt-extras editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word cython-mode counsel-projectile counsel swiper ivy cargo rust-mode browse-at-remote auto-compile aggressive-indent ace-window ace-link anaconda-mode yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo treepy toml-mode toc-org tagedit tablist systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox packed overseer org-projectile org-present org-pomodoro org-mime org-bullets org-board open-junk-file ob-translate nginx-mode neotree nameless mwim multicolumn multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint key-chord json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-mc evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help emmet-mode elisp-slime-nav drupal-mode dotenv-mode diminish csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode biblio bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auctex-latexmk ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
