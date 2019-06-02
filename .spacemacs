@@ -39,14 +39,16 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     helm
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-enable-sort-by-usage t
+                      auto-completion-enable-snippets-in-popup t)
      better-defaults
      emacs-lisp
      git
+     helm
      markdown
      multiple-cursors
-     treemacs
      ;; org is now loaded from my GTD private layer which declares the org layer as a dependency in its own layers.el and implements GTD in org.
      (gtd :variables
           ;; org-enable-org-journal-support t
@@ -67,6 +69,7 @@ This function should only modify configuration layer settings."
                      spell-checking-enable-by-default nil
                      ispell-really-aspell t)
      syntax-checking
+     treemacs
      (version-control :variables
                       version-control-diff-tool 'diff-hl)
      ;; End of Spacemacs suggested useful layers block.
@@ -77,8 +80,14 @@ This function should only modify configuration layer settings."
       :variables
       helm-dash-docset-newpath "~/.local/share/Zeal/Zeal/docsets"
       helm-dash-browser-func 'eww)
+     elm
      finance
-     html
+     gtags
+     prettier
+     web-beautify
+     (html
+      :variables
+      web-fmt-tool 'prettier)
      (javascript
       :variables
       javascript-backend 'lsp
@@ -363,7 +372,7 @@ It should only modify the values of Spacemacs settings."
    ;; another same-purpose window is available. If non-nil, `switch-to-buffer'
    ;; displays the buffer in a same-purpose window even if the buffer can be
    ;; displayed in the current window. (default nil)
-   dotspacemacs-switch-to-buffer-prefers-purpose nil
+   dotspacemacs-switch-to-buffer-prefers-purpose t
 
    ;; If non-nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
@@ -515,6 +524,9 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; https://emacs.stackexchange.com/a/44796/9858
+  (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
+  (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
   )
 
 (defun dotspacemacs/user-load ()
@@ -537,6 +549,9 @@ before packages are loaded."
   ;;  :load-path "~/.emacs.d/private/local/user-directories/user-directories"
   ;;  :init (load-library "setup-user-directories")
   ;;  )
+  (spacemacs|use-package-add-hook css-mode
+    :post-config
+    (add-hook 'css-mode-hook #'lsp))
   (use-package eslintd-fix
     :defer t
     :config
@@ -624,11 +639,12 @@ This function is called at the very end of Spacemacs initialization."
  '(org-download-method (quote attach))
  '(package-selected-packages
    (quote
-    (zeal-at-point helm-dash treemacs-projectile treemacs-evil treemacs pfuture lv tide typescript-mode lsp-ui company-lsp lsp-mode ht eslintd-fix yasnippet-snippets web-mode slime-company slime rjsx-mode racer pyvenv phpcbf ox-hugo orgit org-ref pdf-tools org-download org-brain live-py-mode hl-todo helm-bibtex parsebib eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu eshell-prompt-extras editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word cython-mode counsel-projectile counsel swiper ivy cargo rust-mode browse-at-remote auto-compile aggressive-indent ace-window ace-link anaconda-mode yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo treepy toml-mode toc-org tagedit tablist systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox packed overseer org-projectile org-present org-pomodoro org-mime org-bullets org-board open-junk-file ob-translate nginx-mode neotree nameless mwim multicolumn multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint key-chord json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-mc evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help emmet-mode elisp-slime-nav drupal-mode dotenv-mode diminish csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode biblio bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auctex-latexmk ace-jump-helm-line ac-ispell))))
+    (helm-gtags ggtags company-quickhelp zeal-at-point helm-dash treemacs-projectile treemacs-evil treemacs pfuture lv tide typescript-mode lsp-ui company-lsp lsp-mode ht eslintd-fix yasnippet-snippets web-mode slime-company slime rjsx-mode racer pyvenv phpcbf ox-hugo orgit org-ref pdf-tools org-download org-brain live-py-mode hl-todo helm-bibtex parsebib eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu eshell-prompt-extras editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word cython-mode counsel-projectile counsel swiper ivy cargo rust-mode browse-at-remote auto-compile aggressive-indent ace-window ace-link anaconda-mode yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo treepy toml-mode toc-org tagedit tablist systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox packed overseer org-projectile org-present org-pomodoro org-mime org-bullets org-board open-junk-file ob-translate nginx-mode neotree nameless mwim multicolumn multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint key-chord json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-mc evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help emmet-mode elisp-slime-nav drupal-mode dotenv-mode diminish csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode biblio bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auctex-latexmk ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :underline nil :weight bold))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :underline nil :weight bold)))))
 )
