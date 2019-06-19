@@ -81,6 +81,7 @@ This function should only modify configuration layer settings."
       helm-dash-docset-newpath "~/.local/share/Zeal/Zeal/docsets"
       helm-dash-browser-func 'eww)
      elm
+     emoji
      finance
      gtags
      prettier
@@ -92,14 +93,18 @@ This function should only modify configuration layer settings."
       :variables
       javascript-backend 'lsp
       javascript-fmt-tool 'prettier
+      javascript-import-tool 'import-js
       ;; javascript-disable-tern-port-files nil
       ;; web-beautify-js-program "/usr/bin/js_beautify.pl"
       )
+     (typescript
+      :variables typescript-backend 'lsp)
      (latex
       :variables
       latex-enable-auto-fill t
       latex-enable-magic t)
      lsp
+     dap
      nginx
      php
      ;; (python
@@ -260,6 +265,11 @@ It should only modify the values of Spacemacs settings."
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
 
+   ;; Default major mode for a new empty buffer. Possible values are mode
+   ;; names such as `text-mode'; and `nil' to use Fundamental mode.
+   ;; (default `text-mode')
+   dotspacemacs-new-empty-buffer-major-mode 'text-mode
+
    ;; Default major mode of the scratch buffer (default `text-mode')
    dotspacemacs-scratch-mode 'text-mode
 
@@ -391,6 +401,11 @@ It should only modify the values of Spacemacs settings."
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup nil
+
+   ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
+   ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
+   ;; borderless fullscreen. (default nil)
+   dotspacemacs-undecorated-at-startup nil
 
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
@@ -565,11 +580,13 @@ before packages are loaded."
     :post-config
     (nconc org-babel-load-languages
            '((ditaa . t)
-             (js . t)
+             ;; (js . t)
              (latex . t)
              (lilypond . t)
              (lisp . t)
-             (org . t))))
+             (org . t)))
+    (nconc org-src-lang-modes
+           '(("js" . js2))))
   (use-package org-faces
     :defer t
     :config
@@ -633,13 +650,13 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
  '(flycheck-javascript-eslint-executable "eslint_d")
- '(org-attach-directory "~/Antiquæ Novæ/personas" t)
+ '(org-attach-directory "~/Antiquæ Novæ/personas")
  '(org-attach-git-commit nil t)
  '(org-download-image-dir "~/Imágenes")
  '(org-download-method (quote attach))
  '(package-selected-packages
    (quote
-    (helm-gtags ggtags company-quickhelp zeal-at-point helm-dash treemacs-projectile treemacs-evil treemacs pfuture lv tide typescript-mode lsp-ui company-lsp lsp-mode ht eslintd-fix yasnippet-snippets web-mode slime-company slime rjsx-mode racer pyvenv phpcbf ox-hugo orgit org-ref pdf-tools org-download org-brain live-py-mode hl-todo helm-bibtex parsebib eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu eshell-prompt-extras editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word cython-mode counsel-projectile counsel swiper ivy cargo rust-mode browse-at-remote auto-compile aggressive-indent ace-window ace-link anaconda-mode yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo treepy toml-mode toc-org tagedit tablist systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox packed overseer org-projectile org-present org-pomodoro org-mime org-bullets org-board open-junk-file ob-translate nginx-mode neotree nameless mwim multicolumn multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint key-chord json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-mc evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help emmet-mode elisp-slime-nav drupal-mode dotenv-mode diminish csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode biblio bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auctex-latexmk ace-jump-helm-line ac-ispell))))
+    (dap-mode bui tree-mode emojify emoji-cheat-sheet-plus company-emoji helm-gtags ggtags company-quickhelp zeal-at-point helm-dash treemacs-projectile treemacs-evil treemacs pfuture lv tide typescript-mode lsp-ui company-lsp lsp-mode ht eslintd-fix yasnippet-snippets web-mode slime-company slime rjsx-mode racer pyvenv phpcbf ox-hugo orgit org-ref pdf-tools org-download org-brain live-py-mode hl-todo helm-bibtex parsebib eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu eshell-prompt-extras editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word cython-mode counsel-projectile counsel swiper ivy cargo rust-mode browse-at-remote auto-compile aggressive-indent ace-window ace-link anaconda-mode yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo treepy toml-mode toc-org tagedit tablist systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox packed overseer org-projectile org-present org-pomodoro org-mime org-bullets org-board open-junk-file ob-translate nginx-mode neotree nameless mwim multicolumn multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint key-chord json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-mc evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help emmet-mode elisp-slime-nav drupal-mode dotenv-mode diminish csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode biblio bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auctex-latexmk ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
