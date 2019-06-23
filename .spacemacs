@@ -83,6 +83,7 @@ This function should only modify configuration layer settings."
      elm
      emoji
      finance
+     github
      gtags
      prettier
      web-beautify
@@ -125,6 +126,7 @@ This function should only modify configuration layer settings."
      shell-scripts
      sql
      systemd
+     themes-megapack
      tmux
      (typography :variables typography-enable-typographic-editing t)
      yaml
