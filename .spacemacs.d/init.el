@@ -26,7 +26,6 @@ This function should only modify configuration layer settings."
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
 
-   ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
@@ -47,20 +46,18 @@ This function should only modify configuration layer settings."
      emacs-lisp
      git
      helm
+     lsp
      markdown
      multiple-cursors
-     ;; org is now loaded from my GTD private layer which declares the org layer as a dependency in its own layers.el and implements GTD in org.
-     (gtd :variables
-          ;; org-enable-org-journal-support t
-          ;; org-journal-dir "~/Documentos/Birman/journal"
-          gtd-base-path "~/Documentos/GTD/"
-          org-export-with-date nil
-          org-html-html5-fancy t
-          org-refile-targets
-          '((nil :maxlevel . 9)
-            (org-agenda-files :maxlevel . 9)
-            (org-agenda-diary-file :maxlevel . 2)
-            ("~/Documentos/Birman/poemas/bocetos.org" :maxlevel . 2)))
+     (org :variables
+          ;; org-enable-bootstrap-support t
+          org-enable-epub-support t
+          org-enable-github-support t
+          org-enable-hugo-support t
+          org-enable-org-journal-support t
+          org-enable-reveal-js-support t
+          org-enable-sticky-header t
+          org-want-todo-bindings t)
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
@@ -75,60 +72,110 @@ This function should only modify configuration layer settings."
      ;; End of Spacemacs suggested useful layers block.
      bibtex
      common-lisp
+     ;; Does this layer fail on a brand new spacemacs installation?
      csv
+     dap
      (dash
       :variables
       helm-dash-docset-newpath "~/.local/share/Zeal/Zeal/docsets"
       helm-dash-browser-func 'eww)
-     elm
+     (deft
+       :variables
+       deft-directory "~/Documentos/GTD")
+     elixir
      emoji
+     erlang
+     (ess
+      :variables
+      julia-mode-enable-ess t
+      julia-mode-enable-lsp t
+      )
      finance
+     (geolocation
+      :variables
+      geolocation-enable-automatic-theme-changer t
+      ;; geolocation-enable-location-service t
+      ;; geolocation-enable-weather-forecast t
+      )
      github
      gtags
      prettier
-     web-beautify
+     (haskell
+      :variables
+      haskell-enable-hindent t
+      ;; haskell-process-type 'stack-ghci
+      )
      (html
       :variables
       web-fmt-tool 'prettier)
+     import-js
      (javascript
       :variables
+      ;; default when using the lsp layer
       javascript-backend 'lsp
       javascript-fmt-tool 'prettier
       javascript-import-tool 'import-js
-      ;; javascript-disable-tern-port-files nil
-      ;; web-beautify-js-program "/usr/bin/js_beautify.pl"
+      ;; javascript-lsp-linter nil
+      javascript-repl 'nodejs
+      js2-basic-offset 2
+      js2-include-node-externs t
+      js2-mode-show-strict-warnings nil
+      js2-mode-show-parse-errors nil)
+     ;; flow-type
+     ;; (typescript :variables
+     ;;             ;; relay on jorgebucaran/nvm. A fisher plugin that installs nvm
+     ;;             ;; and prepends ~/.config/nvm/<version>/bin to the PATH
+     ;;             ;; environment variable.
+     ;;             tide-tsserver-executable "tsserver"
+     ;;             typescript-linter 'eslint
+     ;;             )
+     (json
+      :variables
+      js-indent-level 2
+      json-fmt-tool 'prettier)
+     (julia
+      :variables julia-mode-enable-lsp t
       )
-     (typescript
-      :variables typescript-backend 'lsp)
      (latex
       :variables
       latex-enable-auto-fill t
       latex-enable-magic t)
-     lsp
-     dap
+     (lua :variables
+          lua-backend 'lsp-emmy
+          ;; lua-lsp-emmy-jar-path "~/.emacs.d/EmmyLua-LS-all.jar" ; default path
+          ;; lua-lsp-emmy-java-path "java"                         ; default path
+          ;; lua-lsp-emmy-enable-file-watchers t
+          )                  ; enabled default
      nginx
+     pdf
      php
-     ;; (python
-     ;;  :variables
-     ;;  python-shell-interpreter "jupyter"
-     ;;  python-shell-interpreter-args "console --simple-prompt"
-     ;;  ;; python-shell-interpreter-args ""
-     ;;  )
+     plantuml
+     (python
+      :variables
+      python-pipenv-activate t
+      ;; python-shell-interpreter "jupyter"
+      ;; python-shell-interpreter-args "console --simple-prompt"
+      ;; python-shell-interpreter-args ""
+      )
      ;; (ipython-notebook
-     ;;   ;; :variables
+     ;;   :variables
      ;;   ;; python-shell-interpreter "jupyter"
      ;;   ;; python-shell-interpreter-args "console --simple-prompt"
      ;;   )
-     python
+     prolog
      react
+     ;; (ranger :variables ranger-show-preview t)
      rust
+     racket
      scheme
      shell-scripts
      sql
      systemd
      themes-megapack
+     theming
      tmux
      (typography :variables typography-enable-typographic-editing t)
+     unicode-fonts
      yaml
      )
 
@@ -140,20 +187,42 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
-                                      eslintd-fix
+                                      (bookmark+ :location (recipe :fetcher github :repo "emacsmirror/bookmark-plus"))
+                                      company-box
+
+                                      context-coloring
+                                      ;; temporary comment while I figure why eslint_d freezes
+                                      ;; eslintd-fix
+
+                                      ;; hyperbole
+                                      indium
+                                      jedi
+                                      jedi-core
+                                      multicolumn
                                       ob-translate
                                       (org-attach :location built-in)
                                       org-board
-                                      org-download
-                                      (org-multilingual :location "~/.emacs.d/private/local/org-multilingual/")
-                                      (org-protocol :location built-in)
-                                      multicolumn
+                                      org-bookmark-heading
+                                      (org-protocol-capture-html :location (recipe
+                                                                            :fetcher github
+                                                                            :repo "alphapapa/org-protocol-capture-html"))
+                                      ;; (org-multilingual :location "~/.emacs.d/private/local/org-multilingual/")
+                                      ;; Trying org-protocol support within my `gtd' private layer.
+                                      ;; (org-protocol :location built-in)
+                                      org-super-agenda
+                                      org-web-tools
                                       (ox-extra :location built-in)
-                                      jedi
-                                      jedi-core
+                                      pollen-mode
+                                      company-pollen
+                                      poet-theme
+                                      pretty-mode
+                                      (prettify-utils :location (recipe :fetcher github :repo "Ilazki/prettify-utils.el"))
                                       pynt
                                       ;; (user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :branch "stormwatch" :files ("user-directories/*.el")))
                                       ;; user-directories :location "~/.emacs.d/private/local/user-directories/"
+                                      (ox-tufte-latex :location (recipe :fetcher github :repo "tsdye/tufte-org-mode" :files ("ox-tufte-latex.el")))
+                                      tidal
+                                      writefreely
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -185,10 +254,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
-   ;; File path pointing to emacs 27.1 executable compiled with support
-   ;; for the portable dumper (this is currently the branch pdumper).
-   ;; (default "emacs-27.0.50")
-   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
+   ;; Name of executable file pointing to emacs 27+. This executable must be
+   ;; in your PATH.
+   ;; (default "emacs")
+   dotspacemacs-emacs-pdumper-executable-file "emacs"
 
    ;; Name of the Spacemacs dump file. This is the file will be created by the
    ;; portable dumper in the cache directory under dumps sub-directory.
@@ -222,8 +291,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
-   ;; (default nil)
-   dotspacemacs-verify-spacelpa-archives nil
+   ;; (default t)
+   dotspacemacs-verify-spacelpa-archives t
 
    ;; If non-nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
@@ -244,8 +313,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default 'vim)
    dotspacemacs-editing-style 'vim
 
-   ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
-   dotspacemacs-verbose-loading nil
+   ;; If non-nil show the version string in the Spacemacs buffer. It will
+   ;; appear as (spacemacs version)@(emacs version)
+   ;; (default t)
+   dotspacemacs-startup-buffer-show-version t
 
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
@@ -282,8 +353,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(doom-solarized-light
+                         doom-solarized-dark)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -298,10 +369,9 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
-   ;; quickly tweak the mode-line size to make separators look not too crappy.
+   ;; Default font or prioritized list of fonts.
    dotspacemacs-default-font '("Input Sans"
-                               :size 14
+                               :size 13.0
                                :weight normal
                                :width normal)
 
@@ -402,7 +472,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-maximized-at-startup t
 
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
@@ -464,7 +534,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smartparens-strict-mode t
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etc…
+   ;; over any automatically added closing parenthesis, bracket, quote, etc...
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
    dotspacemacs-smart-closing-parenthesis t
 
@@ -475,7 +545,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server nil
+   dotspacemacs-enable-server t
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -530,7 +600,7 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil))
+   dotspacemacs-pretty-docs t))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -546,9 +616,206 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; https://www.reddit.com/r/emacs/comments/aug9in/failed_to_verify_signature_archivecontentssig/
+  ;; temporary workaround. Be sure to remove the following as soon as possible.
+  ;; (setq package-check-signature nil)
+
   ;; https://emacs.stackexchange.com/a/44796/9858
   (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
   (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
+  ;; Workaround for emacsclient not setting the default font size
+  ;; https://github.com/syl20bnr/spacemacs/issues/10894#issuecomment-397574636
+  ;;(add-to-list 'default-frame-alist
+  ;;             '(font . "-FBI -Input Sans-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1"))
+  (setq theming-modifications
+        '((leuven
+           (context-coloring-level-0-face :foreground "#333333")
+           (context-coloring-level-1-face :foreground "#0000ff")
+           (context-coloring-level-2-face :foreground "#6434a3")
+           (context-coloring-level-3-face :foreground "#ba36a5")
+           (context-coloring-level-4-face :foreground "#d0372d")
+           (context-coloring-level-5-face :foreground "#036a07")
+           (context-coloring-level-6-face :foreground "#006699")
+           (context-coloring-level-7-face :foreground "#006fe0")
+           (context-coloring-level-8-face :foreground "#808080"))
+          (monokai
+           (context-coloring-level-0-face :foreground "#f8f8f2")
+           (context-coloring-level-1-face :foreground "#66d9ef")
+           (context-coloring-level-2-face :foreground "#a1efe4")
+           (context-coloring-level-3-face :foreground "#a6e22e")
+           (context-coloring-level-4-face :foreground "#e6db74")
+           (context-coloring-level-5-face :foreground "#fd971f")
+           (context-coloring-level-6-face :foreground "#f92672")
+           (context-coloring-level-7-face :foreground "#fd5ff0")
+           (context-coloring-level-8-face :foreground "#ae81ff"))
+          (sanityinc-solarized-light
+           (context-coloring-level-0-face  :foreground "#839496")
+           (context-coloring-level-1-face  :foreground "#268bd2")
+           (context-coloring-level-2-face  :foreground "#2aa198")
+           (context-coloring-level-3-face  :foreground "#859900")
+           (context-coloring-level-4-face  :foreground "#b58900")
+           (context-coloring-level-5-face  :foreground "#cb4b16")
+           (context-coloring-level-6-face  :foreground "#dc322f")
+           (context-coloring-level-7-face  :foreground "#d33682")
+           (context-coloring-level-8-face  :foreground "#6c71c4")
+           (context-coloring-level-9-face  :foreground "#69b7f0")
+           (context-coloring-level-10-face :foreground "#69cabf")
+           (context-coloring-level-11-face :foreground "#b4c342")
+           (context-coloring-level-12-face :foreground "#deb542")
+           (context-coloring-level-13-face :foreground "#f2804f")
+           (context-coloring-level-14-face :foreground "#ff6e64")
+           (context-coloring-level-15-face :foreground "#f771ac")
+           (context-coloring-level-16-face :foreground "#9ea0e5"))
+          (sanityinc-solarized-dark
+           (context-coloring-level-0-face :foreground "#839496")
+           (context-coloring-level-1-face :foreground "#268bd2")
+           (context-coloring-level-2-face :foreground "#2aa198")
+           (context-coloring-level-3-face :foreground "#859900")
+           (context-coloring-level-4-face :foreground "#b58900")
+           (context-coloring-level-5-face :foreground "#cb4b16")
+           (context-coloring-level-6-face :foreground "#dc322f")
+           (context-coloring-level-7-face :foreground "#d33682")
+           (context-coloring-level-8-face :foreground "#6c71c4")
+           (context-coloring-level-9-face :foreground "#69b7f0")
+           (context-coloring-level-10-face :foreground "#69cabf")
+           (context-coloring-level-11-face :foreground "#b4c342")
+           (context-coloring-level-12-face :foreground "#deb542")
+           (context-coloring-level-13-face :foreground "#f2804f")
+           (context-coloring-level-14-face :foreground "#ff6e64")
+           (context-coloring-level-15-face :foreground "#f771ac")
+           (context-coloring-level-16-face :foreground "#9ea0e5"))
+          (spacegray
+           (context-coloring-level-0-face :foreground "#ffffff")
+           (context-coloring-level-1-face :foreground "#89aaeb")
+           (context-coloring-level-2-face :foreground "#c189eb")
+           (context-coloring-level-3-face :foreground "#bf616a")
+           (context-coloring-level-4-face :foreground "#dca432")
+           (context-coloring-level-5-face :foreground "#ebcb8b")
+           (context-coloring-level-6-face :foreground "#b4eb89")
+           (context-coloring-level-7-face :foreground "#89ebca"))
+          (tango
+           (context-coloring-level-0-face :foreground "#2e3436")
+           (context-coloring-level-1-face :foreground "#346604")
+           (context-coloring-level-2-face :foreground "#204a87")
+           (context-coloring-level-3-face :foreground "#5c3566")
+           (context-coloring-level-4-face :foreground "#a40000")
+           (context-coloring-level-5-face :foreground "#b35000")
+           (context-coloring-level-6-face :foreground "#c4a000")
+           (context-coloring-level-7-face :foreground "#8ae234")
+           (context-coloring-level-8-face :foreground "#8cc4ff")
+           (context-coloring-level-9-face :foreground "#ad7fa8")
+           (context-coloring-level-10-face :foreground "#ef2929")
+           (context-coloring-level-11-face :foreground "#fcaf3e")
+           (context-coloring-level-12-face :foreground "#fce94f"))
+          (doom-solarized-light
+           (context-coloring-level-0-face :foreground "#839496")
+           (context-coloring-level-1-face :foreground "#268bd2")
+           (context-coloring-level-2-face :foreground "#2aa198")
+           (context-coloring-level-3-face :foreground "#859900")
+           (context-coloring-level-4-face :foreground "#b58900")
+           (context-coloring-level-5-face :foreground "#cb4b16")
+           (context-coloring-level-6-face :foreground "#dc322f")
+           (context-coloring-level-7-face :foreground "#d33682")
+           (context-coloring-level-8-face :foreground "#6c71c4")
+           (context-coloring-level-9-face :foreground "#69b7f0")
+           (context-coloring-level-10-face :foreground "#69cabf")
+           (context-coloring-level-11-face :foreground "#b4c342")
+           (context-coloring-level-12-face :foreground "#deb542")
+           (context-coloring-level-13-face :foreground "#f2804f")
+           (context-coloring-level-14-face :foreground "#ff6e64")
+           (context-coloring-level-15-face :foreground "#f771ac")
+           (context-coloring-level-16-face :foreground "#9ea0e5"))
+          (doom-solarized-dark
+           (context-coloring-level-0-face :foreground "#839496")
+           (context-coloring-level-1-face :foreground "#268bd2")
+           (context-coloring-level-2-face :foreground "#2aa198")
+           (context-coloring-level-3-face :foreground "#859900")
+           (context-coloring-level-4-face :foreground "#b58900")
+           (context-coloring-level-5-face :foreground "#cb4b16")
+           (context-coloring-level-6-face :foreground "#dc322f")
+           (context-coloring-level-7-face :foreground "#d33682")
+           (context-coloring-level-8-face :foreground "#6c71c4")
+           (context-coloring-level-9-face :foreground "#69b7f0")
+           (context-coloring-level-10-face :foreground "#69cabf")
+           (context-coloring-level-11-face :foreground "#b4c342")
+           (context-coloring-level-12-face :foreground "#deb542")
+           (context-coloring-level-13-face :foreground "#f2804f")
+           (context-coloring-level-14-face :foreground "#ff6e64")
+           (context-coloring-level-15-face :foreground "#f771ac")
+           (context-coloring-level-16-face :foreground "#9ea0e5"))
+          (zenburn
+           (context-coloring-level-0-face :foreground "#dcdccc")
+           (context-coloring-level-1-face :foreground "#93e0e3")
+           (context-coloring-level-2-face :foreground "#bfebbf")
+           (context-coloring-level-3-face :foreground "#f0dfaf")
+           (context-coloring-level-4-face :foreground "#dfaf8f")
+           (context-coloring-level-5-face :foreground "#cc9393")
+           (context-coloring-level-6-face :foreground "#dc8cc3")
+           (context-coloring-level-7-face :foreground "#94bff3")
+           (context-coloring-level-8-face :foreground "#9fc59f")
+           (context-coloring-level-9-face :foreground "#d0bf8f")
+           (context-coloring-level-10-face :foreground "#dca3a3"))
+          (t
+           (fixed-pitch :family "Input Sans")
+           (fixed-pitch-serif :family "Input Serif")
+           (variable-pitch
+            ;; :family "Minion Pro"
+            ;; :family "EB Garamond 12"
+            ;; :family "Cormorant Garamond"
+            :family "Alegreya"
+            :height 1.4)
+           (font-lock-string-face :inherit fixed-pitch-serif :weight semi-light)
+           (font-lock-doc-face :inherit font-lock-string-face)
+           ;; (font-lock-comment-face :inherit fixed-pitch-serif :weight light :slant italic)
+           ;; (font-lock-comment-face :family "InputSerif Medium")
+           (font-lock-constant-face :inherit fixed-pitch)
+           (hl-todo :inherit fixed-pitch)
+
+           (magit-section-highlight :family "monospace")
+
+           ;; (button :family "monospace")
+           ;; (org-brain-button :family "monospace")
+           ;; (org-brain-wires :family "Input Mono Narrow Liga")
+           (org-brain-wires :family "monospace")
+           (org-brain-parent :family "monospace")
+           (org-brain-child :family "monospace")
+
+           ;; Adpated from https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+           (org-indent :inherit (org-hide fixed-pitch))
+
+           ;; with “:height 0.6” `hl-todo' and `org-todo' caps seem to align
+           ;; with `virtual-pitch''s x-height, like if they were real small
+           ;; caps.
+           (org-todo :family "DINPro" :height 0.6)
+           (org-done :inherit org-todo)
+           (org-drawer :inherit fixed-pitch :height 0.6)
+           (org-priority :family "Input Sans Condensed" :height 0.7 :weight normal)
+           ;; (org-priority :family "monospace" :height 0.7 :weight normal)
+           (line-number :family "Input Mono Narrow Liga")
+           (org-link :underline nil)
+           (org-document-info-keyword :inherit fixed-pitch :height 0.6)
+           (org-document-info :inherit fixed-pitch-serif :height 0.6)
+           (org-block :inherit fixed-pitch :height 0.7)
+           (org-code :inherit org-block)
+           (org-quote :inherit variable-pitch :height 0.6 :slant normal)
+           ;; I have to add `:slant normal' again in spite of making
+           ;; `org-verse'inherit from `org-quote'
+           (org-verse :inherit variable-pitch :slant normal)
+           (org-meta-line :inherit fixed-pitch :height 0.6)
+           ;; Suposedly, `org-block-begin-line' and `org-block-end-line' inherit
+           ;; from `org-meta-line' but they keep using `org-default' or maybe
+           ;; just `default' if not set as per the following lines?
+           (org-block-begin-line :inherit org-meta-line)
+           (org-block-end-line :inherit org-block-begin-line)
+           (org-property-value :inherit fixed-pitch-serif :height 0.6)
+           (org-date :inherit fixed-pitch-serif :height 0.6)
+           ;; (org-kbd :inherit fixed-pitch-serif)
+           (org-special-keyword :inherit fixed-pitch :height 0.6)
+           (org-tag :inherit fixed-pitch :height 0.6)
+           ;; (org-table :family monospaced :height 0.8)
+           (org-table :family "Input Mono Narrow Liga" :height 0.8)
+           (table-cell :inherit org-table)
+           )))
   )
 
 (defun dotspacemacs/user-load ()
@@ -564,111 +831,378 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-  (ido-mode -1)
+  (with-eval-after-load 'org
+    (setq org-directory "~/Documentos/GTD"
+          org-default-notes-file (concat org-directory "/refile.org"))
+    (spacemacs|use-package-add-hook org
+      :post-config
+      ;; This was working berfore but now freezes when opening org files with js source blocks. It is eslint_d's fault. lets try again.
+      ;; (nconc org-src-lang-modes '(("js" . js2)))
+      (nconc org-babel-load-languages
+             '((ditaa . t)
+               (latex . t)
+               (lilypond . t)
+               (lisp . t)
+               (org . t)))
+      (setenv "NODE_PATH"
+              (concat
+               "/usr/local/src/emacs/org/babel_local/node_modules" ":"
+               (getenv "NODE_PATH")
+               )))
+    (use-package org
+      :defer t
+      :config
+      (org-expiry-insinuate)
+      :custom
+      ;; The contents of "agenda files" may contain a single `.' in order to
+      ;; include all of `org-directory' contents matching
+      ;; `org-agenda-file-regexp'.
+      (org-agenda-files (concat org-directory "/agenda files"))
+      (org-refile-targets
+       '((nil :maxlevel . 9)
+         (org-agenda-files :maxlevel . 9)
+         (org-agenda-diary-file :maxlevel . 2)
+         ("~/Documentos/Birman Ezequiel/poemas/bocetos.org" :maxlevel . 2)))
+      (org-startup-indented t)
+      (org-expiry-inactive-timestamps t))
+    (use-package org-bookmark-heading
+      :defer t
+      :after org
+      :config (setq org-bookmark-jump-indirect t))
+    (use-package org-faces
+      :defer t
+      :custom
+      (org-fontify-quote-and-verse-blocks t))
+    (use-package org-attach
+      :defer t
+      :custom
+      (org-attach-directory "~/Antiquæ Novæ/personas")
+      (org-attach-git-commit nil))
+    ;; (use-package org-board
+    ;;   :defer t
+    ;;   :config
+    ;;   (progn
+    ;;     (defun do-org-board-dl-hook ()
+    ;;       (when (equal (buffer-name)
+    ;;                    (concat "CAPTURE-" org-board-capture-file))
+    ;;         (org-board-archive)))
+    ;;     (add-hook 'org-capture-before-finalize-hook 'do-org-board-dl-hook)
+    ;;     (with-eval-after-load 'org-capture
+    ;;       (defvar org-board-capture-file "my-org-board.org" "Default org-board file for captures")
+    ;;       (push `("c" "capture through org protocol" entry
+    ;;               (file+headline ,org-board-capture-file "Unsorted")
+    ;;               "* %?%:description\n:PROPERTIES:\n:URL: %:link\n:END:\n\n Added %U") org-capture-templates))
+    ;;     (global-set-key (kbd "C-c o") org-board-keymap)))
+    ;; (use-package ob-js
+    ;;   :defer t
+    ;;   :init (setq org-babel-js-cmd "indium")
+    ;;   )
+    (use-package org-capture
+      :defer t
+      :init
+      (setq org-capture-templates
+            `(("t" "todo" entry (file "")
+               "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+              ("r" "respond" entry (file "")
+               "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+              ("n" "note" entry (file "")
+               "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+              ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "/diary.org"))
+
+               "* %?\n%U\n" :clock-in t :clock-resume t)
+              ("P" "org-protocol" entry (file "")
+               "* TODO Review %c\n%U\n" :immediate-finish t)
+
+              ;; From https://github.com/alphapapa/org-protocol-capture-html
+              ;; “You need a suitable org-capture template. I recommend this one.
+              ;; Whatever you choose, the default selection key is w, so if you
+              ;; want to use a different key, you’ll need to modify the script and
+              ;; the bookmarklets.”
+              ("w" "Web site" entry
+               (file "")
+               "* %a :website:\n\n%U %?\n\n%:initial")
+
+              ("m" "Meeting" entry (file "")
+               "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+              ("C" "Phone call" entry (file "")
+               "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+              ("h" "Habit" entry (file "")
+               "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+
+              ;; From
+              ;; https://github.com/sprig/org-capture-extension#set-up-handlers-in-emacs
+              ;; “The L template above would break for links to pages having [
+              ;; and ] characters in their page titles - notably ArXiv. To
+              ;; mitigate this, you can use the improved template, contributed by
+              ;; Vincent Picaud:”. `transform-square-brackets-to-round-ones' is
+              ;; defined in funcs.el
+              ("p" "Protocol" entry (file+headline ,(concat org-directory "/notes.org") "Inbox")
+               "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+              ("L" "Protocol Link" entry (file+headline ,(concat org-directory "/notes.org") "Inbox")
+               "* %? [[%:link][%(gtd//transform-square-brackets-to-round-ones \"%:description\")]]\n")
+              )))
+
+    (use-package org-download
+      :defer t
+      :custom
+      (org-download-method 'attach)
+      (org-download-image-dir "~/Imágenes"))
+    (use-package org-habit
+      :defer t
+      :after org
+      ;; :config
+      ;; (progn
+      ;; (org-habit-graph-column 50)
+      ;; (org-habit-preceding-days 7)))
+      )
+    (use-package org-protocol
+      :defer t
+      :after server
+      :commands (org-protocol-capture org-protocol-create)
+      :init
+      (progn
+        (spacemacs/set-leader-keys-for-major-mode 'org-mode
+          "mp" 'org-protocol-capture)))
+    (use-package org-protocol-capture-html
+      :defer t)
+    (use-package org-super-agenda
+      :defer t
+      :config
+      (org-super-agenda-mode)
+      :custom
+      (org-super-agenda-groups '((:auto-category t))))
+    (use-package org-web-tools
+      :defer t)
+    (use-package ox
+      :defer t
+      :custom
+      (org-export-with-date nil))
+    (use-package ox-html
+      :defer t
+      :custom
+      (org-html-html5-fancy t))
+    (use-package ox-latex
+      :defer t
+      :config
+      (nconc org-latex-classes
+             ;; The following (including comments) was copied from
+             ;; https://github.com/dangom/org-thesis/blob/074c653187a8e788d7d07e77add0e8bdb37f49b3/org-init.el#L295
+             '(("mimore"
+                "\\documentclass{mimore}
+ [NO-DEFAULT-PACKAGES]
+ [PACKAGES]
+ [EXTRA]"
+                ("\\section{%s}" . "\\section*{%s}")
+                ("\\subsection{%s}" . "\\subsection*{%s}")
+                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
+               ;; Mimosis is a class I used to write my Ph.D. thesis.
+               ("mimosis"
+                "\\documentclass{mimosis}
+ [NO-DEFAULT-PACKAGES]
+ [PACKAGES]
+ [EXTRA]
+\\newcommand{\\mboxparagraph}[1]{\\paragraph{#1}\\mbox{}\\\\}
+\\newcommand{\\mboxsubparagraph}[1]{\\subparagraph{#1}\\mbox{}\\\\}"
+                ("\\chapter{%s}" . "\\chapter*{%s}")
+                ("\\section{%s}" . "\\section*{%s}")
+                ("\\subsection{%s}" . "\\subsection*{%s}")
+                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                ("\\mboxparagraph{%s}" . "\\mboxparagraph*{%s}")
+                ("\\mboxsubparagraph{%s}" . "\\mboxsubparagraph*{%s}"))
+
+               ;; Elsarticle is Elsevier class for publications.
+               ("elsarticle"
+                "\\documentclass{elsarticle}
+ [NO-DEFAULT-PACKAGES]
+ [PACKAGES]
+ [EXTRA]"
+                ("\\section{%s}" . "\\section*{%s}")
+                ("\\subsection{%s}" . "\\subsection*{%s}")
+                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
+               ;; from
+               ;; https://github.com/tsdye/tufte-org-mode/blob/215cffc9d75c549e98a0ad3536adecae511d594b/tufte-latex.org#913-tufte-handout-class
+               ("tufte-handout"
+                "\\documentclass{tufte-handout}"
+                ;;   [NO-DEFAULT-PACKAGES]"
+                ("\\section{%s}" . "\\section*{%s}")
+                ("\\subsection{%s}" . "\\subsection*{%s}"))
+
+               ;; from
+               ;; https://github.com/tsdye/tufte-org-mode/blob/215cffc9d75c549e98a0ad3536adecae511d594b/tufte-latex.org#914-tufte-book-class
+               ("tufte-book"
+                "\\documentclass[twoside,nobib]{tufte-book}"
+                ;; [NO-DEFAULT-PACKAGES]"
+                ("\\part{%s}" . "\\part*{%s}")
+                ("\\chapter{%s}" . "\\chapter*{%s}")
+                ("\\section{%s}" . "\\section*{%s}")
+                ("\\subsection{%s}" . "\\subsection*{%s}")
+                ("\\paragraph{%s}" . "\\paragraph*{%s}"))
+               ))
+      :custom
+      ;; auctexlatexmk.el says to set `$pdf_mode = 1' in latexmkrc but I have
+      ;; `$pdf_mode = 4' in /etc/latexmk.conf which according to latexmk docs
+      ;; means tu use lualatex by default and it seems to work too. I also must
+      ;; change the default value of `TeX-engine' from default to luatex.
+      (org-latex-compiler "lualatex")))
+
+  (setq prettify-symbols-unprettify-at-point t)
+  (global-prettify-symbols-mode +1)
+  ;; https://github.com/syl20bnr/spacemacs/issues/11640#issuecomment-442759171
+  ;; (ido-mode -1)
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
+  (use-package bookmark+
+    :ensure t)
+  ;; (use-package company-box
+  ;;   :hook (company-mode . company-box-mode))
   ;; (use-package user-directories
   ;;  :defer t
   ;;  :load-path "~/.emacs.d/private/local/user-directories/user-directories"
   ;;  :init (load-library "setup-user-directories")
   ;;  )
-  (spacemacs|use-package-add-hook css-mode
-    :post-config
-    (add-hook 'css-mode-hook #'lsp))
-  (use-package eslintd-fix
+  ;; (spacemacs|use-package-add-hook css-mode
+  ;;   :post-config
+  ;;   (add-hook 'css-mode-hook #'lsp))
+  (use-package auto-revert-mode
+    :defer t
+    :hook doc-view-mode)
+  (use-package lsp
+    :defer t
+    :hook ((
+            css-mode
+            erlang-mode
+            ;; Throws error
+            ;; json-mode
+            latex-mode
+            )
+           lsp)
+    :custom
+    (lsp-eslint-server-command
+     `("node"
+       ,(expand-file-name (car (last (file-expand-wildcards "/home/eze/.vscode/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js"))))
+       "--stdio")))
+  (use-package company-lsp
+    :defer t
+    :config
+    :config
+    ;; (add-to-list 'company-lsp-filter-candidates '(lsp-emmy-lua . t))
+    (nconc company-lsp-filter-candidates
+           '((lsp-emmy-lua. t)))
+    )
+  (use-package lsp-erlang
+    :defer t
+    :custom
+    lsp-erlang-server-install-dir "/usr/local/src/erlang/erlang_ls")
+  (use-package css-mode
+    :defer t
+    :custom
+    (css-indent-offset 2))
+  (use-package doom-themes
     :defer t
     :config
     (progn
-      (add-hook 'js2-mode-hook 'eslintd-fix-mode)))
-  (use-package flycheck
+      (doom-themes-treemacs-config)
+      (doom-themes-org-config)))
+
+  (use-package ein
     :defer t
     :custom
-    ((flycheck-javascript-eslint-executable "eslint_d")))
-  (spacemacs|use-package-add-hook org
-    :post-config
-    (nconc org-babel-load-languages
-           '((ditaa . t)
-             ;; (js . t)
-             (latex . t)
-             (lilypond . t)
-             (lisp . t)
-             (org . t)))
-    (nconc org-src-lang-modes
-           '(("js" . js2))))
-  (use-package org-faces
+    (ein:polymode))
+
+  ;; Temporary comment while I figure out why eslint_d freezes
+  ;; (use-package eslintd-fix
+  ;;   :hook
+  ;;   (js2-mode eslintd-fix-mode))
+
+  (use-package context-coloring
     :defer t
-    :config
-    (progn
-      (set-face-attribute 'org-link nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
-      ;; (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-date nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-special-keyword nil :inherit 'fixed-pitch)))
-  (use-package org-attach
+    :hook ((js2-mode emacs-lisp-mode eval-expression-minibuffer-setup) . context-coloring-mode))
+  (use-package face-remap
     :defer t
-    :custom
-    (org-attach-directory "~/Antiquæ Novæ/personas")
-    (org-attach-git-commit nil))
-  (use-package org-board
-    :defer t
-    :config
-    (progn
-      (defun do-org-board-dl-hook ()
-        (when (equal (buffer-name)
-                     (concat "CAPTURE-" org-board-capture-file))
-          (org-board-archive)))
-      (add-hook 'org-capture-before-finalize-hook 'do-org-board-dl-hook)
-      (with-eval-after-load 'org-capture
-        (defvar org-board-capture-file "my-org-board.org" "Default org-board file for captures")
-        (push `("c" "capture through org protocol" entry
-                (file+headline ,org-board-capture-file "Unsorted")
-                "* %?%:description\n:PROPERTIES:\n:URL: %:link\n:END:\n\n Added %U") org-capture-templates))
-      (global-set-key (kbd "C-c o") org-board-keymap)))
-  (use-package org-table
-    :defer t
-    :config
-    (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
-  (use-package table
-    :defer t
-    :config
-    (set-face-attribute 'table-cell nil :inherit 'fixed-pitch))
-  (use-package org-download
+    :hook
+    (text-mode . variable-pitch-mode))
+
+  ;; temporary comment while I figure why eslint_d eslintd-fix freezes
+  ;; (use-package flycheck
+  ;;   :defer t
+  ;;   :custom
+  ;;   (flycheck-javascript-eslint-executable "eslint_d"))
+
+  ;; (use-package pretty-mode
+  ;;   :config
+  ;;   (progn
+  ;;     (global-pretty-mode t)
+  ;;     (pretty-deactivate-groups
+  ;;      '(:equality :ordering :ordering-double :ordering-triple
+  ;;                  :arrows :arrows-twoheaded :punctuation
+  ;;                  :logic :sets
+  ;;                  ;; :nil
+  ;;                  ))
+  ;;     (pretty-activate-groups
+  ;;      '(:greek))))
+  (use-package prettify-utils)
+  (use-package geolocation
     :defer t
     :custom
-    ((org-download-method 'attach)
-     (org-download-image-dir "~/Imágenes")))
+    (calendar-location-name "Buenos Aires, Argentina")
+    (calendar-latitude -34.64)
+    (calendar-longitude -58.36))
+  (use-package indium
+    :defer t
+    :custom (indium-chrome-executable "/usr/bin/google-chrome-unstable")
+    )
+  (use-package indium-interaction
+    :after (:any js-mode js2-mode)
+    :hook ((js-mode js2-mode) . indium-interaction-mode))
   ;; (use-package smart-tabs-mode
   ;;   :defer t
   ;;   :config (smart-tabs-insinuate 'c 'c++ 'java 'javascript 'cperl 'python 'ruby 'nxml)
   ;;   :custom (indent-tabs-mode t))
+  ;; (use-package nodejs-repl
+  ;;   :defer t
+  ;;   :custom (nodejs-repl-arguments "--experimental-modules"))
+  (use-package solarized
+    :defer t
+    :custom (solarized-use-variable-pitch t))
+  (use-package TeX
+    :defer t
+    :custom (TeX-engine 'luatex))
+  (use-package tidal
+    :defer t
+    :custom (tidal-interpreter "stack ghci --package tidal"))
+  (use-package web-mode
+    :defer t
+    :custom
+    (css-indent-offset 2)
+    (web-mode-markup-indent-offset 2)
+    (web-mode-css-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-attr-indent-offset 2)
+    :custom-face
+    (web-mode-html-tag-face ((t (:inherit fixed-pitch-serif)))))
+  ;; (use-package rjsx-mode
+  ;;   :defer t
+  ;;   :custom-face
+  ;;   (rjsx-tag ((t
+  ;;               ;; (:inherit font-lock-function-name-face fixed-pitch-serif)
+  ;;               (:inherit web-mode-html-tag-face)
+  ;;               ))))
+  (use-package writefreely
+    :after org
+    :defer t
+    ;; Authentification token, if wanted.
+    ;; Alternatively (setq writefreely-auth-token "00000000-0000-0000-0000-000000000000")
+    ;; :config (load-library "writefreely-auth-token.el.gpg")
+    :custom
+    (writefreely-maybe-publish-created-date t)
+    (writefreely-auth-token "31f9e1db-4632-4e3b-522d-9b32bb8e4e26"))
   (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(evil-want-Y-yank-to-eol nil)
- '(flycheck-javascript-eslint-executable "eslint_d")
- '(org-attach-directory "~/Antiquæ Novæ/personas")
- '(org-attach-git-commit nil t)
- '(org-download-image-dir "~/Imágenes")
- '(org-download-method (quote attach))
- '(package-selected-packages
-   (quote
-    (dap-mode bui tree-mode emojify emoji-cheat-sheet-plus company-emoji helm-gtags ggtags company-quickhelp zeal-at-point helm-dash treemacs-projectile treemacs-evil treemacs pfuture lv tide typescript-mode lsp-ui company-lsp lsp-mode ht eslintd-fix yasnippet-snippets web-mode slime-company slime rjsx-mode racer pyvenv phpcbf ox-hugo orgit org-ref pdf-tools org-download org-brain live-py-mode hl-todo helm-bibtex parsebib eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu eshell-prompt-extras editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word cython-mode counsel-projectile counsel swiper ivy cargo rust-mode browse-at-remote auto-compile aggressive-indent ace-window ace-link anaconda-mode yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typo treepy toml-mode toc-org tagedit tablist systemd symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pytest pynt pyenv-mode py-isort pug-mode prettier-js popwin pippel pipenv pip-requirements phpunit php-extras php-auto-yasnippets persp-mode pcre2el password-generator paradox packed overseer org-projectile org-present org-pomodoro org-mime org-bullets org-board open-junk-file ob-translate nginx-mode neotree nameless mwim multicolumn multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magic-latex-buffer macrostep lorem-ipsum livid-mode link-hint key-chord json-navigator json-mode js2-refactor js-doc jedi insert-shebang indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag graphql golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-ledger flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-mc evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help emmet-mode elisp-slime-nav drupal-mode dotenv-mode diminish csv-mode company-web company-tern company-statistics company-shell company-php company-auctex company-anaconda common-lisp-snippets column-enforce-mode clean-aindent-mode centered-cursor-mode biblio bbdb auto-yasnippet auto-highlight-symbol auto-dictionary auctex-latexmk ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :underline nil :weight bold))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :underline nil :weight bold)))))
-)
