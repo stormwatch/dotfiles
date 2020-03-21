@@ -40,8 +40,9 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t
-                      auto-completion-enable-sort-by-usage t
-                      auto-completion-enable-snippets-in-popup t)
+                      ;; auto-completion-enable-sort-by-usage t
+                      ;; auto-completion-enable-snippets-in-popup t
+                      auto-completion-use-company-box t)
      better-defaults
      emacs-lisp
      git
@@ -188,7 +189,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
                                       (bookmark+ :location (recipe :fetcher github :repo "emacsmirror/bookmark-plus"))
-                                      company-box
 
                                       context-coloring
                                       ;; temporary comment while I figure why eslint_d freezes
@@ -592,6 +592,13 @@ It should only modify the values of Spacemacs settings."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
+
+   ;; If non nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; indent handling like has been reported for `go-mode'.
+   ;; If it does deactivate it here.
+   ;; (default t)
+   dotspacemacs-use-clean-aindent-mode t
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
