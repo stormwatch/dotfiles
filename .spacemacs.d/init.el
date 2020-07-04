@@ -61,15 +61,17 @@ This function should only modify configuration layer settings."
           org-want-todo-bindings t)
      (shell :variables
             shell-default-height 30
-            shell-default-position 'bottom)
+            shell-default-position 'bottom
+            shell-default-shell 'vterm
+            shell-enable-smart-eshell t)
      (spell-checking :variables
                      spell-checking-enable-auto-dictionary t
                      spell-checking-enable-by-default nil
                      ispell-really-aspell t)
      syntax-checking
-     treemacs
      (version-control :variables
                       version-control-diff-tool 'diff-hl)
+     treemacs
      ;; End of Spacemacs suggested useful layers block.
      bibtex
      common-lisp
@@ -153,7 +155,11 @@ This function should only modify configuration layer settings."
      plantuml
      (python
       :variables
+      python-backend 'lsp
+      python-lsp-git-root "/usr/local/src/python/python-language-server"
+      python-lsp-server 'mspyls
       python-pipenv-activate t
+      pyvenv-default-virtual-env-name "/usr/local/venvs/devel"
       ;; python-shell-interpreter "jupyter"
       ;; python-shell-interpreter-args "console --simple-prompt"
       ;; python-shell-interpreter-args ""
@@ -189,7 +195,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
                                       (bookmark+ :location (recipe :fetcher github :repo "emacsmirror/bookmark-plus"))
-
                                       context-coloring
                                       ;; temporary comment while I figure why eslint_d freezes
                                       ;; eslintd-fix
@@ -199,6 +204,7 @@ This function should only modify configuration layer settings."
                                       jedi
                                       jedi-core
                                       multicolumn
+                                      (ob-erlang :location (recipe :fetcher github :repo "B7rian/ob-erlang"))
                                       ob-translate
                                       (org-attach :location built-in)
                                       org-board
@@ -217,7 +223,7 @@ This function should only modify configuration layer settings."
                                       poet-theme
                                       pretty-mode
                                       (prettify-utils :location (recipe :fetcher github :repo "Ilazki/prettify-utils.el"))
-                                      pynt
+                                      ;; pynt
                                       ;; (user-directories :location (recipe :fetcher github :repo "stormwatch/user-directories" :branch "stormwatch" :files ("user-directories/*.el")))
                                       ;; user-directories :location "~/.emacs.d/private/local/user-directories/"
                                       (ox-tufte-latex :location (recipe :fetcher github :repo "tsdye/tufte-org-mode" :files ("ox-tufte-latex.el")))
@@ -263,9 +269,9 @@ It should only modify the values of Spacemacs settings."
    ;; portable dumper in the cache directory under dumps sub-directory.
    ;; To load it when starting Emacs add the parameter `--dump-file'
    ;; when invoking Emacs 27.1 executable on the command line, for instance:
-   ;;   ./emacs --dump-file=~/.emacs.d/.cache/dumps/spacemacs.pdmp
-   ;; (default spacemacs.pdmp)
-   dotspacemacs-emacs-dumper-dump-file "spacemacs.pdmp"
+   ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
+   ;; (default spacemacs-27.1.pdmp)
+   dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
 
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
    ;; possible. Set it to nil if you have no way to use HTTPS in your
@@ -284,6 +290,13 @@ It should only modify the values of Spacemacs settings."
    ;; performance issues due to garbage collection operations.
    ;; (default '(100000000 0.1))
    dotspacemacs-gc-cons '(100000000 0.1)
+
+   ;; Set `read-process-output-max' when startup finishes.
+   ;; This defines how much data is read from a foreign process.
+   ;; Setting this >= 1 MB should increase performance for lsp servers
+   ;; in emacs 27.
+   ;; (default (* 1024 1024))
+   dotspacemacs-read-process-output-max (* 1024 1024)
 
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
@@ -394,8 +407,10 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-major-mode-leader-key ","
 
    ;; Major mode leader key accessible in `emacs state' and `insert state'.
-   ;; (default "C-M-m")
-   dotspacemacs-major-mode-emacs-leader-key "C-M-m"
+   ;; (default "C-M-m" for terminal mode, "<M-return>" for GUI mode).
+   ;; Thus M-RET should work as leader key in both GUI and terminal modes.
+   ;; C-M-m also should work in terminal mode, but not in GUI mode.
+   dotspacemacs-major-mode-emacs-leader-key (if window-system "<M-return>" "C-M-m")
 
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
@@ -607,7 +622,11 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs t))
+   dotspacemacs-pretty-docs t
+
+   ;; If nil the home buffer shows the full path of agenda items
+   ;; and todos. If non nil only the file name is shown.
+   dotspacemacs-home-shorten-agenda-source nil))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -821,6 +840,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (org-tag :inherit fixed-pitch :height 0.6)
            ;; (org-table :family monospaced :height 0.8)
            (org-table :family "Input Mono Narrow Liga" :height 0.8)
+           (org-verbatim :inherit org-block)
            (table-cell :inherit org-table)
            )))
   )
@@ -840,13 +860,14 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (with-eval-after-load 'org
     (setq org-directory "~/Documentos/GTD"
-          org-default-notes-file (concat org-directory "/refile.org"))
+          org-default-notes-file (concat org-directory "/inbox.org"))
     (spacemacs|use-package-add-hook org
       :post-config
       ;; This was working berfore but now freezes when opening org files with js source blocks. It is eslint_d's fault. lets try again.
       ;; (nconc org-src-lang-modes '(("js" . js2)))
       (nconc org-babel-load-languages
              '((ditaa . t)
+               (erlang . t)
                (latex . t)
                (lilypond . t)
                (lisp . t)
@@ -870,6 +891,7 @@ before packages are loaded."
          (org-agenda-files :maxlevel . 9)
          (org-agenda-diary-file :maxlevel . 2)
          ("~/Documentos/Birman Ezequiel/poemas/bocetos.org" :maxlevel . 2)))
+      (org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "CANCELLED(c)")))
       (org-startup-indented t)
       (org-expiry-inactive-timestamps t))
     (use-package org-bookmark-heading
@@ -908,14 +930,17 @@ before packages are loaded."
       :defer t
       :init
       (setq org-capture-templates
-            `(("t" "todo" entry (file "")
+            `(("t" "todo [inbox]" entry (file "")
                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+              ("T" "Tickler" entry
+               (file "tickler.org")
+               "* %i%? \n %U")
+              ("h" "habit" table-line (file+header "gtd" "Registro Conductual"))
               ("r" "respond" entry (file "")
                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
               ("n" "note" entry (file "")
                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
               ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "/diary.org"))
-
                "* %?\n%U\n" :clock-in t :clock-resume t)
               ("P" "org-protocol" entry (file "")
                "* TODO Review %c\n%U\n" :immediate-finish t)
@@ -1101,10 +1126,6 @@ before packages are loaded."
     (nconc company-lsp-filter-candidates
            '((lsp-emmy-lua. t)))
     )
-  (use-package lsp-erlang
-    :defer t
-    :custom
-    lsp-erlang-server-install-dir "/usr/local/src/erlang/erlang_ls")
   (use-package css-mode
     :defer t
     :custom
@@ -1129,6 +1150,10 @@ before packages are loaded."
   (use-package context-coloring
     :defer t
     :hook ((js2-mode emacs-lisp-mode eval-expression-minibuffer-setup) . context-coloring-mode))
+  (use-package erlang
+    :defer t
+    :custom
+    (erlang-indent-level 2))
   (use-package face-remap
     :defer t
     :hook
