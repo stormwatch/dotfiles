@@ -75,6 +75,10 @@ This function should only modify configuration layer settings."
      ;; End of Spacemacs suggested useful layers block.
      bibtex
      common-lisp
+     (clojure :variables
+              ;; clojure-enable-sayid t
+              ;; clojure-enable-clj-refactor t
+              clojure-enable-fancify-symbols t)
      ;; Does this layer fail on a brand new spacemacs installation?
      csv
      dap
@@ -111,33 +115,39 @@ This function should only modify configuration layer settings."
      (html
       :variables
       web-fmt-tool 'prettier)
+     java
+     tide
      import-js
      (javascript
       :variables
       ;; default when using the lsp layer
       javascript-backend 'lsp
+      ;; javascript-backend 'tide
       javascript-fmt-tool 'prettier
       javascript-import-tool 'import-js
-      ;; javascript-lsp-linter nil
+      javascript-lsp-linter nil
       javascript-repl 'nodejs
       js2-basic-offset 2
       js2-include-node-externs t
       js2-mode-show-strict-warnings nil
       js2-mode-show-parse-errors nil)
-     ;; flow-type
-     ;; (typescript :variables
-     ;;             ;; relay on jorgebucaran/nvm. A fisher plugin that installs nvm
-     ;;             ;; and prepends ~/.config/nvm/<version>/bin to the PATH
-     ;;             ;; environment variable.
-     ;;             tide-tsserver-executable "tsserver"
-     ;;             typescript-linter 'eslint
-     ;;             )
+     (typescript :variables
+                 ;; relay on jorgebucaran/nvm. A fisher plugin that installs nvm
+                 ;; and prepends ~/.config/nvm/<version>/bin to the PATH
+                 ;; environment variable.
+                 ;; typescript-backend 'tide
+                 ;; tide-tsserver-executable "tsserver"
+                 typescript-linter 'eslint
+                 ;; typescript-lsp-linter nil
+                 )
      (json
       :variables
       js-indent-level 2
       json-fmt-tool 'prettier)
      (julia
-      :variables julia-mode-enable-lsp t
+      :variables
+      julia-mode-enable-lsp t
+      julia-mode-enable-ess t
       )
      (latex
       :variables
@@ -182,7 +192,10 @@ This function should only modify configuration layer settings."
      theming
      tmux
      (typography :variables typography-enable-typographic-editing t)
-     unicode-fonts
+     (unicode-fonts
+      :variables
+      unicode-fonts-enable-ligatures t
+      unicode-fonts-ligature-modes '(prog-mode))
      yaml
      )
 
@@ -270,7 +283,7 @@ It should only modify the values of Spacemacs settings."
    ;; To load it when starting Emacs add the parameter `--dump-file'
    ;; when invoking Emacs 27.1 executable on the command line, for instance:
    ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
-   ;; (default spacemacs-27.1.pdmp)
+   ;; (default (format "spacemacs-%s.pdmp" emacs-version))
    dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
 
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
@@ -300,7 +313,9 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
-   ;; latest version of packages from MELPA. (default nil)
+   ;; latest version of packages from MELPA. Spacelpa is currently in
+   ;; experimental state please use only for testing purposes.
+   ;; (default nil)
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
@@ -615,6 +630,13 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
 
+   ;; If non-nil shift your number row to match the entered keyboard layout
+   ;; (only in insert state). Currently supported keyboard layouts are:
+   ;; `qwerty-us', `qwertz-de' and `querty-ca-fr'.
+   ;; New layouts can be added in `spacemacs-editing' layer.
+   ;; (default nil)
+   dotspacemacs-swap-number-row nil
+
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
    dotspacemacs-zone-out-when-idle nil
@@ -841,6 +863,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            ;; (org-table :family monospaced :height 0.8)
            (org-table :family "Input Mono Narrow Liga" :height 0.8)
            (org-verbatim :inherit org-block)
+           (org-formula :inherit org-table)
            (table-cell :inherit org-table)
            )))
   )
@@ -1116,7 +1139,7 @@ before packages are loaded."
     :custom
     (lsp-eslint-server-command
      `("node"
-       ,(expand-file-name (car (last (file-expand-wildcards "/home/eze/.vscode/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js"))))
+       ,(expand-file-name (first (file-expand-wildcards "/home/eze/.vscode/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js")))
        "--stdio")))
   (use-package company-lsp
     :defer t
@@ -1188,9 +1211,9 @@ before packages are loaded."
     :defer t
     :custom (indium-chrome-executable "/usr/bin/google-chrome-unstable")
     )
-  (use-package indium-interaction
-    :after (:any js-mode js2-mode)
-    :hook ((js-mode js2-mode) . indium-interaction-mode))
+  ;; (use-package indium-interaction
+  ;;   :after (:any js-mode js2-mode)
+  ;;   :hook ((js-mode js2-mode) . indium-interaction-mode))
   ;; (use-package smart-tabs-mode
   ;;   :defer t
   ;;   :config (smart-tabs-insinuate 'c 'c++ 'java 'javascript 'cperl 'python 'ruby 'nxml)
