@@ -73,6 +73,7 @@ This function should only modify configuration layer settings."
                       version-control-diff-tool 'diff-hl)
      treemacs
      ;; End of Spacemacs suggested useful layers block.
+     ansible
      bibtex
      common-lisp
      (clojure :variables
