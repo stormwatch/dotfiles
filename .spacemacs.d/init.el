@@ -185,6 +185,9 @@ This function should only modify configuration layer settings."
      prolog
      react
      ;; (ranger :variables ranger-show-preview t)
+     (ruby :variables
+           ruby-enable-enh-ruby-mode t
+           ruby-insert-encoding-magic-comment nil)
      rust
      racket
      scheme
