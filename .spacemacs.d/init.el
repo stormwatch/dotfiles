@@ -1045,9 +1045,17 @@ before packages are loaded."
       :defer t
       :config
       (nconc org-latex-classes
-             ;; The following (including comments) was copied from
-             ;; https://github.com/dangom/org-thesis/blob/074c653187a8e788d7d07e77add0e8bdb37f49b3/org-init.el#L295
-             '(("mimore"
+             '(("koma-article"
+                "\\documentclass{scrartcl}"
+                ("\\section{%s}" . "\\section*{%s}")
+                ("\\subsection{%s}" . "\\subsection*{%s}")
+                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
+               ;; The following (including comments) was copied from
+               ;; https://github.com/dangom/org-thesis/blob/074c653187a8e788d7d07e77add0e8bdb37f49b3/org-init.el#L295
+               ("mimore"
                 "\\documentclass{mimore}
  [NO-DEFAULT-PACKAGES]
  [PACKAGES]
@@ -1102,8 +1110,7 @@ before packages are loaded."
                 ("\\chapter{%s}" . "\\chapter*{%s}")
                 ("\\section{%s}" . "\\section*{%s}")
                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                ("\\paragraph{%s}" . "\\paragraph*{%s}"))
-               ))
+                ("\\paragraph{%s}" . "\\paragraph*{%s}"))))
       :custom
       ;; auctexlatexmk.el says to set `$pdf_mode = 1' in latexmkrc but I have
       ;; `$pdf_mode = 4' in /etc/latexmk.conf which according to latexmk docs
