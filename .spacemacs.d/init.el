@@ -199,6 +199,7 @@ This function should only modify configuration layer settings."
       :variables
       unicode-fonts-enable-ligatures t
       unicode-fonts-ligature-modes '(prog-mode))
+     vagrant
      yaml
      )
 
