@@ -169,10 +169,10 @@ This function should only modify configuration layer settings."
      (python
       :variables
       python-backend 'lsp
-      python-lsp-git-root "/usr/local/src/python/python-language-server"
-      python-lsp-server 'mspyls
-      python-pipenv-activate t
-      pyvenv-default-virtual-env-name "/usr/local/venvs/devel"
+      ;; python-lsp-git-root "/usr/local/src/python/python-language-server"
+      python-lsp-server 'pyright
+      ;; python-pipenv-activate t
+      ;; pyvenv-default-virtual-env-name "/usr/local/venvs/devel"
       ;; python-shell-interpreter "jupyter"
       ;; python-shell-interpreter-args "console --simple-prompt"
       ;; python-shell-interpreter-args ""
