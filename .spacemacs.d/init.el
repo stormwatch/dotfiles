@@ -203,7 +203,8 @@ This function should only modify configuration layer settings."
       unicode-fonts-enable-ligatures t
       unicode-fonts-ligature-modes '(prog-mode))
      vagrant
-     yaml
+     (yaml :variables
+           yaml-enable-lsp t)
      )
 
 
