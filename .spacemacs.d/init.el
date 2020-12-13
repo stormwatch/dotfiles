@@ -202,19 +202,21 @@ This function should only modify configuration layer settings."
       :variables
       unicode-fonts-enable-ligatures t
       unicode-fonts-ligature-modes '(prog-mode text-mode)
-      unicode-fonts-ligature-set '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-                                   ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-                                   "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-                                   "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-                                   "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-                                   "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-                                   "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-                                   "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-                                   ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-                                   "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-                                   "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-                                   "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                   "://"))
+      ;; unicode-fonts-ligature-set
+      ;;                            '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+      ;;                              ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+      ;;                              "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+      ;;                              "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+      ;;                              "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+      ;;                              "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+      ;;                              "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+      ;;                              "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+      ;;                              ">=" ">>" ">-" "-~" "-|" "->" "-<" "<~" "<*" "<|" "<:"
+      ;;                              "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+      ;;                              "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+      ;;                              "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+      ;;                              "://")
+				 )
      vagrant
      (yaml :variables
            yaml-enable-lsp t)
@@ -428,7 +430,9 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font or prioritized list of fonts.
+   ;; Default font or prioritized list of fonts. The `:size' can be specified as
+   ;; a non-negative integer (pixel size), or a floating-point (point size).
+   ;; Point size is recommended, because it's device independent. (default 10.0)
    dotspacemacs-default-font '("Input Sans"
                                :size 13.0
                                :weight normal
@@ -871,7 +875,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (org-priority :family "Input Sans Condensed" :height 0.7 :weight normal)
            ;; (org-priority :family "monospace" :height 0.7 :weight normal)
            (line-number :family "Input Mono Narrow Liga")
-           (org-link :underline nil)
+           (org-link
+            :inherit org-table
+            :underline t)
            (org-document-info-keyword :inherit fixed-pitch :height 0.6)
            (org-document-info :inherit fixed-pitch-serif :height 0.6)
            (org-block :inherit fixed-pitch :height 0.7)
