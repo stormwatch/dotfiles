@@ -201,22 +201,7 @@ This function should only modify configuration layer settings."
      (unicode-fonts
       :variables
       unicode-fonts-enable-ligatures t
-      unicode-fonts-ligature-modes '(prog-mode text-mode)
-      ;; unicode-fonts-ligature-set
-      ;;                            '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-      ;;                              ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-      ;;                              "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-      ;;                              "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-      ;;                              "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-      ;;                              "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-      ;;                              "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-      ;;                              "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-      ;;                              ">=" ">>" ">-" "-~" "-|" "->" "-<" "<~" "<*" "<|" "<:"
-      ;;                              "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-      ;;                              "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-      ;;                              "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-      ;;                              "://")
-				 )
+      unicode-fonts-ligature-modes '(prog-mode))
      vagrant
      (yaml :variables
            yaml-enable-lsp t)
@@ -242,6 +227,7 @@ This function should only modify configuration layer settings."
                                       jedi
                                       jedi-core
                                       multicolumn
+                                      ob-async
                                       (ob-erlang :location (recipe :fetcher github :repo "B7rian/ob-erlang"))
                                       ob-translate
                                       (org-attach :location built-in)
