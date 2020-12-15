@@ -833,11 +833,11 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
             ;; :family "Cormorant Garamond"
             :family "Alegreya"
             :height 1.4)
-           (font-lock-string-face :inherit fixed-pitch-serif :weight semi-light)
-           (font-lock-doc-face :inherit font-lock-string-face)
+           ;; (font-lock-string-face :inherit fixed-pitch-serif :weight semi-light)
+           ;; (font-lock-doc-face :inherit font-lock-string-face)
            ;; (font-lock-comment-face :inherit fixed-pitch-serif :weight light :slant italic)
            ;; (font-lock-comment-face :family "InputSerif Medium")
-           (font-lock-constant-face :inherit fixed-pitch)
+           ;; (font-lock-constant-face :inherit fixed-pitch)
            (hl-todo :inherit fixed-pitch)
 
            (magit-section-highlight :family "monospace")
