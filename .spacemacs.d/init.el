@@ -85,8 +85,8 @@ This function should only modify configuration layer settings."
      dap
      (dash
       :variables
-      helm-dash-docset-newpath "~/.local/share/Zeal/Zeal/docsets"
-      helm-dash-browser-func 'eww)
+      dash-docs-docset-newpath "~/.local/share/Zeal/Zeal/docsets"
+      dash-docs-browser-func 'eww)
      (deft
        :variables
        deft-directory "~/Documentos/GTD")
