@@ -862,16 +862,21 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            ;; (org-priority :family "monospace" :height 0.7 :weight normal)
            (line-number :family "Input Mono Narrow Liga")
            (org-link
-            :inherit org-table
+            ;; :inherit org-table
             :underline t)
            (org-document-info-keyword :inherit fixed-pitch :height 0.6)
            (org-document-info :inherit fixed-pitch-serif :height 0.6)
            (org-block :inherit fixed-pitch :height 0.7)
            (org-code :inherit org-block)
-           (org-quote :inherit variable-pitch :height 0.6 :slant normal)
-           ;; I have to add `:slant normal' again in spite of making
-           ;; `org-verse'inherit from `org-quote'
-           (org-verse :inherit variable-pitch :slant normal)
+           (org-quote
+            :inherit variable-pitch
+            :height 0.6
+            ;; :slant normal
+            )
+           ;; (org-verse
+           ;; :inherit variable-pitch
+           ;; :slant normal
+           ;; )
            (org-meta-line :inherit fixed-pitch :height 0.6)
            ;; Suposedly, `org-block-begin-line' and `org-block-end-line' inherit
            ;; from `org-meta-line' but they keep using `org-default' or maybe
@@ -884,9 +889,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (org-special-keyword :inherit fixed-pitch :height 0.6)
            (org-tag :inherit fixed-pitch :height 0.6)
            ;; (org-table :family monospaced :height 0.8)
-           (org-table :family "Input Mono Narrow Liga" :height 0.8)
+           ;; (org-table :family "Input Mono Narrow Liga" :height 0.8)
            (org-verbatim :inherit org-block)
-           (org-formula :inherit org-table)
+           ;; (org-formula :inherit org-table)
            (table-cell :inherit org-table)
            )))
   )
