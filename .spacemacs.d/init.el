@@ -188,6 +188,7 @@ This function should only modify configuration layer settings."
      (ruby :variables
            ruby-enable-enh-ruby-mode t
            ruby-insert-encoding-magic-comment nil)
+     restclient
      rust
      racket
      scheme
@@ -892,7 +893,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            ;; (org-table :family "Input Mono Narrow Liga" :height 0.8)
            (org-verbatim :inherit org-block)
            ;; (org-formula :inherit org-table)
-           (table-cell :inherit org-table)
+           ;; (table-cell :inherit org-table)
            )))
   )
 
