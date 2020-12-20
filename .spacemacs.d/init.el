@@ -58,7 +58,8 @@ This function should only modify configuration layer settings."
           org-enable-org-journal-support t
           org-enable-reveal-js-support t
           org-enable-sticky-header t
-          org-want-todo-bindings t)
+          org-want-todo-bindings t
+          org-enable-verb-support t)
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
