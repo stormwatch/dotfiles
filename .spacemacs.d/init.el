@@ -57,6 +57,7 @@ This function should only modify configuration layer settings."
           org-enable-hugo-support t
           org-enable-org-journal-support t
           org-enable-reveal-js-support t
+          org-enable-roam-support t
           org-enable-sticky-header t
           org-want-todo-bindings t
           org-enable-verb-support t)
