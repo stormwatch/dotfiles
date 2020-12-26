@@ -835,11 +835,10 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
             ;; :family "Cormorant Garamond"
             :family "Alegreya"
             :height 1.4)
-           ;; (font-lock-string-face :inherit fixed-pitch-serif :weight semi-light)
-           ;; (font-lock-doc-face :inherit font-lock-string-face)
-           ;; (font-lock-comment-face :inherit fixed-pitch-serif :weight light :slant italic)
-           ;; (font-lock-comment-face :family "InputSerif Medium")
-           ;; (font-lock-constant-face :inherit fixed-pitch)
+           (font-lock-constant-face :inherit fixed-pitch)
+           (font-lock-string-face :inherit fixed-pitch-serif :weight semi-light)
+           (font-lock-doc-face :inherit font-lock-string-face)
+           (font-lock-variable-name-face :inherit font-lock-constant-face)
            (hl-todo :inherit fixed-pitch)
 
            (magit-section-highlight :family "monospace")
@@ -895,6 +894,10 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (org-verbatim :inherit org-block)
            ;; (org-formula :inherit org-table)
            ;; (table-cell :inherit org-table)
+
+           (verb-code-tag :inherit font-lock-string-face :height 0.7)
+           (verb-header :inherit verb-http-keyword)
+           (verb-http-keyword :inherit font-lock-constant-face :height 0.7)
            )))
   )
 
