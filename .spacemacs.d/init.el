@@ -165,6 +165,7 @@ This function should only modify configuration layer settings."
           ;; lua-lsp-emmy-enable-file-watchers t
           )                  ; enabled default
      nginx
+     pass
      pdf
      php
      plantuml
@@ -242,6 +243,7 @@ This function should only modify configuration layer settings."
                                       ;; (org-multilingual :location "~/.emacs.d/private/local/org-multilingual/")
                                       ;; Trying org-protocol support within my `gtd' private layer.
                                       ;; (org-protocol :location built-in)
+                                      org-gcal
                                       org-super-agenda
                                       org-web-tools
                                       (ox-extra :location built-in)
@@ -577,7 +579,15 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers 'relative
+   dotspacemacs-line-numbers '(:relative t
+                                         :visual nil
+                                         :disabled-for-modes dired-mode
+                                         doc-view-mode
+                                         markdown-mode
+                                         org-mode
+                                         pdf-view-mode
+                                         text-mode
+                                         :size-limit-kb 1000)
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -699,6 +709,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; https://github.com/syl20bnr/spacemacs/issues/10894#issuecomment-397574636
   ;;(add-to-list 'default-frame-alist
   ;;             '(font . "-FBI -Input Sans-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1"))
+
+  (setq org-enable-valign t)
+
   (setq theming-modifications
         '((leuven
            (context-coloring-level-0-face :foreground "#333333")
@@ -869,6 +882,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (org-document-info-keyword :inherit fixed-pitch :height 0.6)
            (org-document-info :inherit fixed-pitch-serif :height 0.6)
            (org-block :inherit fixed-pitch :height 0.7)
+           (org-column :inherit org-priority :height 0.7)
            (org-code :inherit org-block)
            (org-quote
             :inherit variable-pitch
@@ -950,7 +964,9 @@ before packages are loaded."
          ("~/Documentos/Birman Ezequiel/poemas/bocetos.org" :maxlevel . 2)))
       (org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "CANCELLED(c)")))
       (org-startup-indented t)
-      (org-expiry-inactive-timestamps t))
+      (org-expiry-inactive-timestamps t)
+      :hook (org-export-before-parsing . (lambda (x) (org-update-all-dblocks)))
+      )
     (use-package org-bookmark-heading
       :defer t
       :after org
@@ -1044,6 +1060,12 @@ before packages are loaded."
       ;; (org-habit-graph-column 50)
       ;; (org-habit-preceding-days 7)))
       )
+    (use-package org-gcal
+      :defer t
+      :custom
+      (org-gcal-client-id "61255370864-4dfg5nbapa6cntpeco9phu0go352gsst.apps.googleusercontent.com")
+      (org-gcal-client-secret "changeme")
+      (org-gcal-fetch-file-alist `(,user-mail-address . "~/Documentos/GTD/inbox.org")))
     (use-package org-protocol
       :defer t
       :after server
