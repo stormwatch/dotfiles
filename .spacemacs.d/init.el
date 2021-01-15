@@ -60,6 +60,7 @@ This function should only modify configuration layer settings."
           org-enable-roam-support t
           org-enable-sticky-header t
           org-want-todo-bindings t
+          org-enable-valign t
           org-enable-verb-support t)
      (shell :variables
             shell-default-height 30
@@ -373,9 +374,13 @@ It should only modify the values of Spacemacs settings."
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
-   ;; `recents' `bookmarks' `projects' `agenda' `todos'.
+   ;; `recents' `recents-by-project' `bookmarks' `projects' `agenda' `todos'.
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
+   ;; The exceptional case is `recents-by-project', where list-type must be a
+   ;; pair of numbers, e.g. `(recents-by-project . (7 .  5))', where the first
+   ;; number is the project limit and the second the limit on the recent files
+   ;; within a project.
    dotspacemacs-startup-lists '((recents . 5)
                                 (projects . 7))
 
@@ -709,8 +714,6 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; https://github.com/syl20bnr/spacemacs/issues/10894#issuecomment-397574636
   ;;(add-to-list 'default-frame-alist
   ;;             '(font . "-FBI -Input Sans-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1"))
-
-  (setq org-enable-valign t)
 
   (setq theming-modifications
         '((leuven
