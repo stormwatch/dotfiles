@@ -1,4 +1,5 @@
 (("centaur" . ((user-emacs-directory . "~/.emacs-profiles.d/centaur-emacs")))
+ ("default" . ((user-emacs-direcotry . "~/.emacs.default")))
  ("emacs" . ((user-emacs-directory . "~/.emacs-profiles.d/emacs")))
  ("doom" . ((user-emacs-directory . "~/.emacs-profiles.d/doom-emacs")))
  ("lsp" . ((user-emacs-directory . "~/.emacs-profiles.d/lsp")))
