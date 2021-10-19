@@ -12,7 +12,9 @@ eslint-plugin-react-hooks
 flow-bin
 import-js
 indium
+libgen-downloader
 prettier
+@prettier/plugin-ruby
 pyright
 standard
 typescript

@@ -1,0 +1,14 @@
+gem-ctags
+dip
+bundler
+gem-browse
+pry
+pry-byebug
+pry-doc
+pry-theme
+rubocop
+ruby-debug-ide
+ruby_parser
+seeing_is_believing
+solargraph
+sqlint
