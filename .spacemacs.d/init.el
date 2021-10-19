@@ -41,17 +41,19 @@ This function should only modify configuration layer settings."
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t
                       ;; auto-completion-enable-sort-by-usage t
-                      ;; auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-idle-delay 0.0
                       auto-completion-use-company-box t)
      better-defaults
      emacs-lisp
      git
-     helm
+     ;; helm
      lsp
      markdown
      multiple-cursors
      (org :variables
           ;; org-enable-bootstrap-support t
+          org-enable-appear-support t
           org-enable-epub-support t
           org-enable-github-support t
           org-enable-hugo-support t
@@ -82,7 +84,8 @@ This function should only modify configuration layer settings."
      (clojure :variables
               ;; clojure-enable-sayid t
               ;; clojure-enable-clj-refactor t
-              clojure-enable-fancify-symbols t)
+              clojure-enable-fancify-symbols t
+              clojure-enable-linters 'clj-kondo)
      ;; Does this layer fail on a brand new spacemacs installation?
      csv
      dap
@@ -104,6 +107,7 @@ This function should only modify configuration layer settings."
       julia-mode-enable-lsp t
       )
      finance
+     floobits
      (geolocation
       :variables
       geolocation-enable-automatic-theme-changer t
@@ -168,19 +172,20 @@ This function should only modify configuration layer settings."
      nginx
      pass
      pdf
-     php
+     ;; php
      plantuml
      (python
       :variables
       python-backend 'lsp
-      python-lsp-git-root "/usr/local/src/python/python-language-server"
-      python-lsp-server 'mspyls
+      ;; python-lsp-git-root "/usr/local/src/python/python-language-server"
+      python-lsp-server 'pyright
       python-pipenv-activate t
       pyvenv-default-virtual-env-name "/usr/local/venvs/devel"
       ;; python-shell-interpreter "jupyter"
       ;; python-shell-interpreter-args "console --simple-prompt"
       ;; python-shell-interpreter-args ""
       )
+     (ipython-notebook :variables ein-backend 'jupyter)
      ;; (ipython-notebook
      ;;   :variables
      ;;   ;; python-shell-interpreter "jupyter"
@@ -191,7 +196,9 @@ This function should only modify configuration layer settings."
      ;; (ranger :variables ranger-show-preview t)
      (ruby :variables
            ruby-enable-enh-ruby-mode t
-           ruby-insert-encoding-magic-comment nil)
+           ruby-insert-encoding-magic-comment nil
+           ruby-test-runner 'rspec)
+     ruby-on-rails
      restclient
      rust
      racket
@@ -210,6 +217,7 @@ This function should only modify configuration layer settings."
      vagrant
      (yaml :variables
            yaml-enable-lsp t)
+     compleseus
      )
 
 
@@ -224,6 +232,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-additional-packages '(
                                       (bookmark+ :location (recipe :fetcher github :repo "emacsmirror/bookmark-plus"))
                                       context-coloring
+                                      crdt
                                       ;; temporary comment while I figure why eslint_d freezes
                                       ;; eslintd-fix
 
@@ -387,6 +396,12 @@ It should only modify the values of Spacemacs settings."
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
 
+   ;; Show numbers before the startup list lines. (default t)
+   dotspacemacs-show-startup-list-numbers t
+
+   ;; The minimum delay in seconds between number key presses. (default 0.4)
+   dotspacemacs-startup-buffer-multi-digit-delay 0.4
+
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
    ;; (default `text-mode')
@@ -410,8 +425,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(sanityinc-solarized-light
-                         sanityinc-solarized-dark)
+   dotspacemacs-themes '(solarized-light
+                         solarized-dark)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -566,12 +581,16 @@ It should only modify the values of Spacemacs settings."
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling t
 
+   ;; Show the scroll bar while scrolling. The auto hide time can be configured
+   ;; by setting this variable to a number. (default t)
+   dotspacemacs-scroll-bar-while-scrolling t
+
    ;; Control line numbers activation.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
    ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
    ;; numbers are relative. If set to `visual', line numbers are also relative,
-   ;; but lines are only visual lines are counted. For example, folded lines
-   ;; will not be counted and wrapped lines are counted as multiple lines.
+   ;; but only visual lines are counted. For example, folded lines will not be
+   ;; counted and wrapped lines are counted as multiple lines.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
    ;;   :visual nil
@@ -598,9 +617,14 @@ It should only modify the values of Spacemacs settings."
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
 
-   ;; If non-nil `smartparens-strict-mode' will be enabled in programming modes.
+   ;; If non-nil and `dotspacemacs-activate-smartparens-mode' is also non-nil,
+   ;; `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode t
+
+   ;; If non-nil smartparens-mode will be enabled in programming modes.
+   ;; (default t)
+   dotspacemacs-activate-smartparens-mode t
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc...
@@ -648,6 +672,9 @@ It should only modify the values of Spacemacs settings."
    ;; %n - Narrow if appropriate
    ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
    ;; %Z - like %z, but including the end-of-line format
+   ;; If nil then Spacemacs uses default `frame-title-format' to avoid
+   ;; performance issues, instead of calculating the frame title by
+   ;; `spacemacs/title-prepare' all the time.
    ;; (default "%I@%S")
    dotspacemacs-frame-title-format "%I@%S"
 
@@ -665,12 +692,15 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
 
-   ;; If non nil activate `clean-aindent-mode' which tries to correct
-   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; If non-nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfere with mode specific
    ;; indent handling like has been reported for `go-mode'.
    ;; If it does deactivate it here.
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
+
+   ;; Accept SPC as y for prompts if non-nil. (default nil)
+   dotspacemacs-use-SPC-as-y nil
 
    ;; If non-nil shift your number row to match the entered keyboard layout
    ;; (only in insert state). Currently supported keyboard layouts are:
@@ -689,8 +719,11 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-pretty-docs t
 
    ;; If nil the home buffer shows the full path of agenda items
-   ;; and todos. If non nil only the file name is shown.
-   dotspacemacs-home-shorten-agenda-source nil))
+   ;; and todos. If non-nil only the file name is shown.
+   dotspacemacs-home-shorten-agenda-source nil
+
+   ;; If non-nil then byte-compile some of Spacemacs files.
+   dotspacemacs-byte-compile nil))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -706,13 +739,15 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  (setq org-roam-v2-ack t)
   ;; https://www.reddit.com/r/emacs/comments/aug9in/failed_to_verify_signature_archivecontentssig/
   ;; temporary workaround. Be sure to remove the following as soon as possible.
   ;; (setq package-check-signature nil)
 
   ;; https://emacs.stackexchange.com/a/44796/9858
-  (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
-  (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
+  ;; (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
+  ;; (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
+
   ;; Workaround for emacsclient not setting the default font size
   ;; https://github.com/syl20bnr/spacemacs/issues/10894#issuecomment-397574636
   ;;(add-to-list 'default-frame-alist
@@ -926,8 +961,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
+
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -941,7 +976,7 @@ before packages are loaded."
     (spacemacs|use-package-add-hook org
       :post-config
       ;; This was working berfore but now freezes when opening org files with js source blocks. It is eslint_d's fault. lets try again.
-      ;; (nconc org-src-lang-modes '(("js" . js2)))
+      ;; (nnconc org-src-lang-modes '(("js" . js2)))
       (nconc org-babel-load-languages
              '((ditaa . t)
                (erlang . t)
@@ -1174,7 +1209,6 @@ before packages are loaded."
       ;; means tu use lualatex by default and it seems to work too. I also must
       ;; change the default value of `TeX-engine' from default to luatex.
       (org-latex-compiler "lualatex")))
-
   (setq prettify-symbols-unprettify-at-point t)
   (global-prettify-symbols-mode +1)
   ;; https://github.com/syl20bnr/spacemacs/issues/11640#issuecomment-442759171
@@ -1195,33 +1229,44 @@ before packages are loaded."
   (use-package auto-revert-mode
     :defer t
     :hook doc-view-mode)
+  (use-package dap-python
+              :defer t
+              :custom
+              (dap-python-debugger 'debugpy))
   (use-package lsp
     :defer t
-    :hook ((
-            css-mode
-            erlang-mode
+    ;; :hook ((
+            ;; css-mode
+            ;; erlang-mode
             ;; Throws error
             ;; json-mode
-            latex-mode
-            )
-           lsp)
+            ;; latex-mode
+            ;; )
+           ;; lsp)
     :custom
     (lsp-eslint-server-command
      `("node"
-       ,(expand-file-name (first (file-expand-wildcards "/home/eze/.vscode/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js")))
+       ,(expand-file-name (first (file-expand-wildcards "~/.vscode-insiders/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js")))
        "--stdio")))
-  (use-package company-lsp
-    :defer t
-    :config
-    :config
-    ;; (add-to-list 'company-lsp-filter-candidates '(lsp-emmy-lua . t))
-    (nconc company-lsp-filter-candidates
-           '((lsp-emmy-lua. t)))
-    )
+  ;; (use-package lsp-steep
+  ;;   :defer t
+  ;;   :custom
+  ;;   (lsp-steep-use-bundler nil))
+  ;; (use-package company-lsp
+  ;;   :defer t
+  ;;   :config
+  ;;   (add-to-list 'company-lsp-filter-candidates '(lsp-emmy-lua . t))
+  ;;   (nconc company-lsp-filter-candidates
+  ;;          '((lsp-emmy-lua. t)))
+  ;;   )
   (use-package css-mode
     :defer t
     :custom
     (css-indent-offset 2))
+  (use-package docker-tramp
+    :defer t
+    :custom
+    (docker-tramp-docker-executable "podman"))
   (use-package doom-themes
     :defer t
     :config
@@ -1290,6 +1335,16 @@ before packages are loaded."
   ;; (use-package nodejs-repl
   ;;   :defer t
   ;;   :custom (nodejs-repl-arguments "--experimental-modules"))
+  (use-package inf-ruby
+    :defer t
+    :custom (inf-ruby-default-implementation "pry"))
+  (use-package rspec-mode
+    :defer t
+    ;; :custom
+    ;; (rspec-spec-command "dip rspec")
+    ;; (rspec-use-bundler-when-possible nil)
+    :config
+   (rspec-install-snippets))
   (use-package solarized
     :defer t
     :custom (solarized-use-variable-pitch t))
@@ -1325,6 +1380,10 @@ before packages are loaded."
     :custom
     (writefreely-maybe-publish-created-date t)
     (writefreely-auth-token "31f9e1db-4632-4e3b-522d-9b32bb8e4e26"))
+  ;; (use-package yasnippet-snippets
+  ;;  :defer t
+  ;;  :config
+  ;;  (yasnippet-snippets-initialize))
   (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
   )
 
