@@ -59,6 +59,7 @@ This function should only modify configuration layer settings."
           org-enable-hugo-support t
           org-enable-org-journal-support t
           org-enable-reveal-js-support t
+          org-enable-roam-protocol t
           org-enable-roam-support t
           org-enable-sticky-header t
           org-want-todo-bindings t
@@ -254,6 +255,7 @@ This function should only modify configuration layer settings."
                                       ;; Trying org-protocol support within my `gtd' private layer.
                                       ;; (org-protocol :location built-in)
                                       org-gcal
+                                      org-roam-ui
                                       org-super-agenda
                                       org-web-tools
                                       (ox-extra :location built-in)
@@ -603,15 +605,14 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers '(:relative t
-                                         :visual nil
-                                         :disabled-for-modes dired-mode
-                                         doc-view-mode
-                                         markdown-mode
-                                         org-mode
-                                         pdf-view-mode
-                                         text-mode
-                                         :size-limit-kb 1000)
+   dotspacemacs-line-numbers '(:visual nil
+                                       :disabled-for-modes dired-mode
+                                       doc-view-mode
+                                       markdown-mode
+                                       org-mode
+                                       pdf-view-mode
+                                       text-mode
+                                       :size-limit-kb 1000)
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -1107,6 +1108,10 @@ before packages are loaded."
       (org-gcal-client-id "61255370864-4dfg5nbapa6cntpeco9phu0go352gsst.apps.googleusercontent.com")
       (org-gcal-client-secret "changeme")
       (org-gcal-fetch-file-alist `(,user-mail-address . "~/Documentos/GTD/inbox.org")))
+    (use-package org-journal
+      :defer t
+      :custom
+      (org-journal-date-format "%F, %A"))
     (use-package org-protocol
       :defer t
       :after server
@@ -1117,6 +1122,16 @@ before packages are loaded."
           "mp" 'org-protocol-capture)))
     (use-package org-protocol-capture-html
       :defer t)
+    (use-package org-roam-ui
+      :defer t
+      :after org-roam
+      ;; :config
+      ;; (setq org-roam-ui-sync-theme t
+      ;;         org-roam-ui-follow t
+      ;;         org-roam-ui-update-on-save t
+      ;;         org-roam-ui-open-on-start t)
+      ;; :hook (after-init . org-roam-ui-mode)
+      )
     (use-package org-super-agenda
       :defer t
       :config
@@ -1229,6 +1244,20 @@ before packages are loaded."
   (use-package auto-revert-mode
     :defer t
     :hook doc-view-mode)
+  (use-package citar
+    :defer t
+    ;; :bind (("C-c b" . citar-insert-citation)
+    ;;        :map minibuffer-local-map
+    ;;        ("M-b" . citar-insert-preset))
+    :custom
+    (citar-bibliography '("~/bib/references.bib"))
+    (org-cite-global-bibliography '("~/bib/references.bib"))
+    (org-cite-insert-processor 'citar)
+    (org-cite-follow-processor 'citar)
+    (org-cite-activate-processor 'citar)
+    :config
+    ;; use consult-completing-read for enhanced interface
+    (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple))
   (use-package dap-python
               :defer t
               :custom
