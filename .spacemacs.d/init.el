@@ -234,6 +234,7 @@ This function should only modify configuration layer settings."
                                       (bookmark+ :location (recipe :fetcher github :repo "emacsmirror/bookmark-plus"))
                                       context-coloring
                                       crdt
+                                      deadgrep
                                       ;; temporary comment while I figure why eslint_d freezes
                                       ;; eslintd-fix
 
