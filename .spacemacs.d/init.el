@@ -741,7 +741,7 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-  (setq org-roam-v2-ack t)
+  ;; (setq org-roam-v2-ack t)
   ;; https://www.reddit.com/r/emacs/comments/aug9in/failed_to_verify_signature_archivecontentssig/
   ;; temporary workaround. Be sure to remove the following as soon as possible.
   ;; (setq package-check-signature nil)
@@ -973,8 +973,7 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (with-eval-after-load 'org
-    (setq org-directory "~/Documentos/GTD"
-          org-default-notes-file (concat org-directory "/inbox.org"))
+    (setq org-default-notes-file (concat org-directory "/inbox.org"))
     (spacemacs|use-package-add-hook org
       :post-config
       ;; This was working berfore but now freezes when opening org files with js source blocks. It is eslint_d's fault. lets try again.
@@ -1123,6 +1122,21 @@ before packages are loaded."
           "mp" 'org-protocol-capture)))
     (use-package org-protocol-capture-html
       :defer t)
+    (use-package org-roam
+      :defer t
+      :init
+      (setq org-roam-v2-ack t)
+      :config
+      (global-page-break-lines-mode -1)
+      :custom
+      (org-roam-directory "~/Documents/org-roam")
+      (org-roam-completion-everywhere t)
+      (org-roam-capture-templates
+       '(("d" "default" plain "%?"
+          :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                             "#+title: ${title}\n")
+          :unnarrowed t)))
+      )
     (use-package org-roam-ui
       :defer t
       :after org-roam
