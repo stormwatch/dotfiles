@@ -53,6 +53,7 @@ This function should only modify configuration layer settings."
      multiple-cursors
      (org :variables
           ;; org-enable-bootstrap-support t
+          org-appear-trigger 'always
           org-enable-appear-support t
           org-enable-epub-support t
           org-enable-github-support t
@@ -109,13 +110,12 @@ This function should only modify configuration layer settings."
       )
      finance
      floobits
-     (geolocation
-      :variables
-      geolocation-enable-automatic-theme-changer t
-      ;; geolocation-enable-location-service t
-      ;; geolocation-enable-weather-forecast t
-      )
-     github
+     ;; (geolocation
+     ;;  :variables
+     ;;  geolocation-enable-automatic-theme-changer t
+     ;;  ;; geolocation-enable-location-service t
+     ;;  ;; geolocation-enable-weather-forecast t
+     ;;  )
      gtags
      prettier
      (haskell
@@ -198,12 +198,13 @@ This function should only modify configuration layer settings."
      (ruby :variables
            ruby-enable-enh-ruby-mode t
            ruby-insert-encoding-magic-comment nil
-           ruby-test-runner 'rspec)
+           ruby-test-runner 'minitest)
      ruby-on-rails
      restclient
      rust
      racket
      scheme
+     shadowenv
      shell-scripts
      sql
      systemd
@@ -213,7 +214,7 @@ This function should only modify configuration layer settings."
      (typography :variables typography-enable-typographic-editing t)
      (unicode-fonts
       :variables
-      unicode-fonts-enable-ligatures t
+      ;; unicode-fonts-enable-ligatures t ; emacs 28+ required
       unicode-fonts-ligature-modes '(prog-mode))
      vagrant
      (yaml :variables
@@ -286,7 +287,7 @@ This function should only modify configuration layer settings."
    ;; installs only the used packages but won't delete unused ones. `all'
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-only))
+   dotspacemacs-install-packages 'used-but-keep-unused))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -296,9 +297,13 @@ It should only modify the values of Spacemacs settings."
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
-   ;; If non-nil then enable support for the portable dumper. You'll need
-   ;; to compile Emacs 27 from source following the instructions in file
+   ;; If non-nil then enable support for the portable dumper. You'll need to
+   ;; compile Emacs 27 from source following the instructions in file
    ;; EXPERIMENTAL.org at to root of the git repository.
+   ;;
+   ;; WARNING: pdumper does not work with Native Compilation, so it's disabled
+   ;; regardless of the following setting when native compilation is in effect.
+   ;;
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
@@ -383,6 +388,13 @@ It should only modify the values of Spacemacs settings."
    ;; If the value is nil then no banner is displayed. (default 'official)
    dotspacemacs-startup-banner 'official
 
+   ;; Scale factor controls the scaling (size) of the startup banner. Default
+   ;; value is `auto' for scaling the logo automatically to fit all buffer
+   ;; contents, to a maximum of the full image height and a minimum of 3 line
+   ;; heights. If set to a number (int or float) it is used as a constant
+   ;; scaling factor for the default logo size.
+   dotspacemacs-startup-banner-scale 'auto
+
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
@@ -404,6 +416,11 @@ It should only modify the values of Spacemacs settings."
 
    ;; The minimum delay in seconds between number key presses. (default 0.4)
    dotspacemacs-startup-buffer-multi-digit-delay 0.4
+
+   ;; If non-nil, show file icons for entries and headings on Spacemacs home buffer.
+   ;; This has no effect in terminal or if "all-the-icons" package or the font
+   ;; is not installed. (default nil)
+   dotspacemacs-startup-buffer-show-icons nil
 
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
@@ -606,14 +623,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers '(:visual nil
-                                       :disabled-for-modes dired-mode
-                                       doc-view-mode
-                                       markdown-mode
-                                       org-mode
-                                       pdf-view-mode
-                                       text-mode
-                                       :size-limit-kb 1000)
+   dotspacemacs-line-numbers nil
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -733,7 +743,8 @@ This function defines the environment variables for your Emacs session. By
 default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
-  (spacemacs/load-spacemacs-env))
+  (spacemacs/load-spacemacs-env)
+)
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -898,6 +909,10 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (font-lock-variable-name-face :inherit font-lock-constant-face)
            (hl-todo :inherit fixed-pitch)
 
+           ;; (ledger-font-auto-xact-face :family "monospace")
+           ;; (ledger-font-periodic-xact-face :family "monospace")
+           ;; (ledger-font-directive-face :family "monospace")
+
            (magit-section-highlight :family "monospace")
 
            ;; (button :family "monospace")
@@ -963,7 +978,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump.")
+dump."
+)
 
 
 (defun dotspacemacs/user-config ()
@@ -1107,7 +1123,7 @@ before packages are loaded."
       :custom
       (org-gcal-client-id "61255370864-4dfg5nbapa6cntpeco9phu0go352gsst.apps.googleusercontent.com")
       (org-gcal-client-secret "changeme")
-      (org-gcal-fetch-file-alist `(,user-mail-address . "~/Documentos/GTD/inbox.org")))
+      (org-gcal-fetch-file-alist `(,user-mail-address . org-default-notes-file)))
     (use-package org-journal
       :defer t
       :custom
@@ -1125,11 +1141,13 @@ before packages are loaded."
     (use-package org-roam
       :defer t
       :init
-      (setq org-roam-v2-ack t)
+      (setq
+       org-roam-v2-ack t
+       org-roam-directory (concat org-directory "/roam"))
       :config
       (global-page-break-lines-mode -1)
       :custom
-      (org-roam-directory "~/Documents/org-roam")
+      ;; (org-roam-directory (concat org-directory "/roam"))
       (org-roam-completion-everywhere t)
       (org-roam-capture-templates
        '(("d" "default" plain "%?"
@@ -1239,6 +1257,7 @@ before packages are loaded."
       ;; means tu use lualatex by default and it seems to work too. I also must
       ;; change the default value of `TeX-engine' from default to luatex.
       (org-latex-compiler "lualatex")))
+
   (setq prettify-symbols-unprettify-at-point t)
   (global-prettify-symbols-mode +1)
   ;; https://github.com/syl20bnr/spacemacs/issues/11640#issuecomment-442759171
@@ -1277,6 +1296,21 @@ before packages are loaded."
               :defer t
               :custom
               (dap-python-debugger 'debugpy))
+  (use-package files
+    :defer t
+    :custom
+    (safe-local-variable-values
+     '((rspec-docker-cwd . "/jobvacancy/")
+       (rspec-use-docker-when-possible . t)
+       (feature-docker-compose-container . "webapp")
+       (rubocopfmt-use-bundler-when-possible)
+       (rubocop-prefer-system-executable . t)
+       (ruby-test-runner . 'minitest)
+       (typescript-backend . tide)
+       (typescript-backend . lsp)
+       (javascript-backend . tide)
+       (javascript-backend . tern)
+       (javascript-backend . lsp))))
   (use-package lsp
     :defer t
     ;; :hook ((
@@ -1389,6 +1423,12 @@ before packages are loaded."
     ;; (rspec-use-bundler-when-possible nil)
     :config
    (rspec-install-snippets))
+  ;; (use-package rubocop
+  ;;   :defer t
+  ;;   :custom (rubocop-prefer-system-executable t))
+  ;; (use-package rubocopfmt
+  ;;   :defer t
+  ;;   :custom (rubocopfmt-use-bundler-when-possible nil))
   (use-package solarized
     :defer t
     :custom (solarized-use-variable-pitch t))
