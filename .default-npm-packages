@@ -10,6 +10,7 @@ eslint-plugin-prettier
 eslint-plugin-react
 eslint-plugin-react-hooks
 flow-bin
+heroku
 import-js
 indium
 libgen-downloader
@@ -20,8 +21,6 @@ standard
 typescript
 typescript-formatter
 typescript-language-server
-vscode-css-languageserver-bin
-vscode-html-languageserver-bin
-vscode-json-languageserver
+vscode-langservers-extracted
 yaml-language-server
 zeal-user-contrib
