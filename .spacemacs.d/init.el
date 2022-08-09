@@ -39,11 +39,16 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      (auto-completion :variables
+                      auto-completion-complete-with-key-sequence "jk"
                       auto-completion-enable-help-tooltip t
                       ;; auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t
-                      auto-completion-idle-delay 0.0
-                      auto-completion-use-company-box t)
+                      ;; auto-completion-idle-delay 0.0
+                      auto-completion-use-company-posframe t
+                      ;; spacemacs-default-company-backends
+                      ;; '((company-semantic company-dabbrev-code company-gtags company-etags company-keywords)
+                      ;;   company-files company-capf company-dabbrev)
+                      )
      better-defaults
      emacs-lisp
      git
@@ -125,7 +130,11 @@ This function should only modify configuration layer settings."
       )
      (html
       :variables
-      web-fmt-tool 'prettier)
+      web-fmt-tool 'prettier
+      css-enable-lsp t
+      less-enable-lsp t
+      scss-enable-lsp t
+      html-enable-lsp t)
      java
      tide
      import-js
@@ -196,9 +205,10 @@ This function should only modify configuration layer settings."
      react
      ;; (ranger :variables ranger-show-preview t)
      (ruby :variables
-           ruby-enable-enh-ruby-mode t
+           ;; ruby-enable-enh-ruby-mode t
            ruby-insert-encoding-magic-comment nil
-           ruby-test-runner 'minitest)
+           ;; ruby-test-runner 'minitest
+           )
      ruby-on-rails
      restclient
      rust
@@ -211,6 +221,7 @@ This function should only modify configuration layer settings."
      themes-megapack
      theming
      tmux
+     (translate :variables gts-translate-list '(("en" "es")))
      (typography :variables typography-enable-typographic-editing t)
      (unicode-fonts
       :variables
@@ -250,6 +261,9 @@ This function should only modify configuration layer settings."
                                       (org-attach :location built-in)
                                       org-board
                                       org-bookmark-heading
+                                      (org-critical-edition :location (recipe
+                                                                       :fetcher gitlab
+                                                                       :repo "maciaschain/org-critical-edition"))
                                       (org-protocol-capture-html :location (recipe
                                                                             :fetcher github
                                                                             :repo "alphapapa/org-protocol-capture-html"))
@@ -694,8 +708,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil - same as frame-title-format)
    dotspacemacs-icon-title-format nil
 
-   ;; Show trailing whitespace (default t)
-   dotspacemacs-show-trailing-whitespace t
+   ;; Color highlight trailing whitespace in all prog-mode and text-mode derived
+   ;; modes such as c++-mode, python-mode, emacs-lisp, html-mode, rst-mode etc.
+   ;; (default t)
+   dotspacemacs-show-trailing-whitespace t 
 
    ;; Delete whitespace while saving buffer. Possible values are `all'
    ;; to aggressively delete empty line and long sequences of whitespace,
@@ -935,8 +951,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            ;; (org-priority :family "monospace" :height 0.7 :weight normal)
            (line-number :family "Input Mono Narrow Liga")
            (org-link
-            ;; :inherit org-table
-            :underline t)
+           :inherit org-table
+           :underline t)
            (org-document-info-keyword :inherit fixed-pitch :height 0.6)
            (org-document-info :inherit fixed-pitch-serif :height 0.6)
            (org-block :inherit fixed-pitch :height 0.7)
@@ -994,13 +1010,13 @@ before packages are loaded."
       :post-config
       ;; This was working berfore but now freezes when opening org files with js source blocks. It is eslint_d's fault. lets try again.
       ;; (nnconc org-src-lang-modes '(("js" . js2)))
-      (nconc org-babel-load-languages
-             '((ditaa . t)
-               (erlang . t)
-               (latex . t)
-               (lilypond . t)
-               (lisp . t)
-               (org . t)))
+      ;; (nconc org-babel-load-languages
+      ;;        '((ditaa . t)
+      ;;          (erlang . t)
+      ;;          (latex . t)
+      ;;          (lilypond . t)
+      ;;          (lisp . t)
+      ;;          (org . t)))
       (setenv "NODE_PATH"
               (concat
                "/usr/local/src/emacs/org/babel_local/node_modules" ":"
@@ -1304,8 +1320,10 @@ before packages are loaded."
        (rspec-use-docker-when-possible . t)
        (feature-docker-compose-container . "webapp")
        (rubocopfmt-use-bundler-when-possible)
-       (rubocop-prefer-system-executable . t)
+       ;; (rubocop-prefer-system-executable . t)
        (ruby-test-runner . 'minitest)
+       (ruby-test-runner . 'ruby-test)
+       (ruby-test-runner . 'rspec)
        (typescript-backend . tide)
        (typescript-backend . lsp)
        (javascript-backend . tide)
