@@ -85,6 +85,9 @@ This function should only modify configuration layer settings."
                       version-control-diff-tool 'diff-hl)
      treemacs
      ;; End of Spacemacs suggested useful layers block.
+     (tree-sitter :variables
+                  spacemacs-tree-sitter-hl-black-list '(js2-mode rjsx-mode)
+                  tree-sitter-fold-enable t)
      ansible
      bibtex
      common-lisp
@@ -145,12 +148,17 @@ This function should only modify configuration layer settings."
       ;; javascript-backend 'tide
       javascript-fmt-tool 'prettier
       javascript-import-tool 'import-js
+      ;; to use eslint_d
       javascript-lsp-linter nil
       javascript-repl 'nodejs
       js2-basic-offset 2
       js2-include-node-externs t
       js2-mode-show-strict-warnings nil
-      js2-mode-show-parse-errors nil)
+      js2-mode-show-parse-errors nil
+
+      ;; as adviced in prettier-eslint_d configuration instructions
+      ;; https://gist.github.com/rstacruz/a2361d000a88e49472c4419116edaccf#step-2-enable-node-add-modules-path-in-spacemacs
+      node-add-modules-path t)
      (typescript :variables
                  ;; relay on jorgebucaran/nvm. A fisher plugin that installs nvm
                  ;; and prepends ~/.config/nvm/<version>/bin to the PATH
@@ -243,6 +251,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
+                                      apheleia
                                       (bookmark+ :location (recipe :fetcher github :repo "emacsmirror/bookmark-plus"))
                                       context-coloring
                                       crdt
@@ -285,6 +294,7 @@ This function should only modify configuration layer settings."
                                       ;; user-directories :location "~/.emacs.d/private/local/user-directories/"
                                       (ox-tufte-latex :location (recipe :fetcher github :repo "tsdye/tufte-org-mode" :files ("ox-tufte-latex.el")))
                                       tidal
+                                      (tsi :location (recipe :fetcher github :repo "orzechowskid/tsi.el"))
                                       writefreely
                                       )
 
@@ -581,12 +591,12 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
-   ;; (default nil) (Emacs 24.4+ only)
+   ;; (default t) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup t
 
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
-   ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
-   ;; borderless fullscreen. (default nil)
+   ;; variable with `dotspacemacs-maximized-at-startup' to obtain fullscreen
+   ;; without external boxes. Also disables the internal border. (default nil)
    dotspacemacs-undecorated-at-startup nil
 
    ;; A value from the range (0..100), in increasing opacity, which describes
@@ -1284,6 +1294,14 @@ before packages are loaded."
   ;; https://github.com/syl20bnr/spacemacs/issues/11640#issuecomment-442759171
   ;; (ido-mode -1)
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
+
+  ;; auto-format different source code files extremely intelligently
+  ;; https://github.com/radian-software/apheleia
+  ;; (use-package apheleia
+  ;;   :ensure t
+  ;;   :config
+  ;;   (apheleia-global-mode +1))
+
   (use-package bookmark+
     :ensure t)
   ;; (use-package company-box
@@ -1314,9 +1332,9 @@ before packages are loaded."
     ;; use consult-completing-read for enhanced interface
     (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple))
   (use-package dap-python
-              :defer t
-              :custom
-              (dap-python-debugger 'debugpy))
+    :defer t
+    :custom
+    (dap-python-debugger 'debugpy))
   (use-package files
     :defer t
     :custom
@@ -1337,13 +1355,13 @@ before packages are loaded."
   (use-package lsp
     :defer t
     ;; :hook ((
-            ;; css-mode
-            ;; erlang-mode
-            ;; Throws error
-            ;; json-mode
-            ;; latex-mode
-            ;; )
-           ;; lsp)
+    ;; css-mode
+    ;; erlang-mode
+    ;; Throws error
+    ;; json-mode
+    ;; latex-mode
+    ;; )
+    ;; lsp)
     :custom
     (dap-firefox-debug-program `("node"
                                  ,(f-join dap-firefox-debug-path
@@ -1402,10 +1420,10 @@ before packages are loaded."
     (text-mode . variable-pitch-mode))
 
   ;; temporary comment while I figure why eslint_d eslintd-fix freezes
-  ;; (use-package flycheck
-  ;;   :defer t
-  ;;   :custom
-  ;;   (flycheck-javascript-eslint-executable "eslint_d"))
+  (use-package flycheck
+    :defer t
+    :custom
+    (flycheck-javascript-eslint-executable "eslint_d"))
 
   ;; (use-package pretty-mode
   ;;   :config
@@ -1449,13 +1467,39 @@ before packages are loaded."
     ;; (rspec-spec-command "dip rspec")
     ;; (rspec-use-bundler-when-possible nil)
     :config
-   (rspec-install-snippets))
+    (rspec-install-snippets))
   ;; (use-package rubocop
   ;;   :defer t
   ;;   :custom (rubocop-prefer-system-executable t))
   ;; (use-package rubocopfmt
   ;;   :defer t
   ;;   :custom (rubocopfmt-use-bundler-when-possible nil))
+
+  ;; https://github.com/orzechowskid/tsi.el/
+  ;; great tree-sitter-based indentation for typescript/tsx, css, json
+  (use-package tsi
+    :after tree-sitter
+    ;; define autoload definitions which when actually invoked will cause package to be loaded
+    :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
+    :init
+    (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
+    (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
+    (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
+    (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
+
+  (use-package typescript-mode
+    :after tree-sitter
+    :config
+    ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
+    ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
+    (define-derived-mode typescriptreact-mode typescript-mode
+      "TypeScript TSX")
+
+    ;; use our derived mode for tsx files
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+    ;; by default, typescript-mode is mapped to the treesitter typescript parser
+    ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+    (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
   (use-package solarized
     :defer t
     :custom (solarized-use-variable-pitch t))
@@ -1467,6 +1511,7 @@ before packages are loaded."
     :custom (tidal-interpreter "stack ghci --package tidal"))
   (use-package web-mode
     :defer t
+    :hook (web-mode . add-node-modules-path)
     :custom
     (css-indent-offset 2)
     (web-mode-markup-indent-offset 2)

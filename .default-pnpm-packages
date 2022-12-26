@@ -1,0 +1,24 @@
+# asdf-pnpm won't use this file at all. We have to manually install the
+# following packages with pnpm add --global --save-dev
+
+dockerfile-language-server-nodejs
+
+## eslint is deprecating global configurations. The following packages are no
+## longer needed
+#eslint-config-standard
+#eslint-config-prettier
+#eslint-plugin-promise
+#eslint-plugin-import
+#eslint-plugin-n
+
+eslint_d
+flow-bin
+import-js
+js-beautify
+prettier
+pyright
+typescript
+typescript-eslint-language-service
+typescript-language-server
+vscode-langservers-extracted
+yaml-language-server
