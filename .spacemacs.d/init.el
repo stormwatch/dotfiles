@@ -27,7 +27,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-ask-for-lazy-installation t
 
    ;; List of additional paths where to look for configuration layers.
-   ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
+   ;; Paths must have a trailing slash (i.e. "~/.mycontribs/")
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
@@ -53,24 +53,27 @@ This function should only modify configuration layer settings."
      emacs-lisp
      git
      ;; helm
-     lsp
+     (lsp :variables
+          lsp-lens-enable t)
      markdown
      multiple-cursors
      (org :variables
           ;; org-enable-bootstrap-support t
           org-appear-trigger 'always
           org-enable-appear-support t
-          org-enable-epub-support t
+          ;; org-enable-epub-support t
           org-enable-github-support t
-          org-enable-hugo-support t
-          org-enable-org-journal-support t
+          ;; org-enable-hugo-support t
+          ;; org-enable-org-journal-support t
           org-enable-reveal-js-support t
-          org-enable-roam-protocol t
-          org-enable-roam-support t
+          ;; org-enable-roam-protocol t
+          ;; org-enable-roam-support t
           org-enable-sticky-header t
+          org-enable-transclusion-support t
           org-want-todo-bindings t
           org-enable-valign t
-          org-enable-verb-support t)
+          ;; org-enable-verb-support t
+          )
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
@@ -86,7 +89,7 @@ This function should only modify configuration layer settings."
      treemacs
      ;; End of Spacemacs suggested useful layers block.
      (tree-sitter :variables
-                  spacemacs-tree-sitter-hl-black-list '(js2-mode rjsx-mode)
+                  ;; spacemacs-tree-sitter-hl-black-list '(js2-mode rjsx-mode)
                   tree-sitter-fold-enable t)
      ansible
      bibtex
@@ -165,8 +168,9 @@ This function should only modify configuration layer settings."
                  ;; environment variable.
                  ;; typescript-backend 'tide
                  ;; tide-tsserver-executable "tsserver"
+                 typescript-fmt-tool 'prettier
                  typescript-linter 'eslint
-                 ;; typescript-lsp-linter nil
+                 typescript-lsp-linter nil
                  )
      (json
       :variables
@@ -224,7 +228,7 @@ This function should only modify configuration layer settings."
      scheme
      shadowenv
      (shell-scripts :variables shell-scripts-backend nil)
-     sql
+     (sql :variables sql-capitalize-keywords t)
      systemd
      themes-megapack
      theming
@@ -263,6 +267,7 @@ This function should only modify configuration layer settings."
                                       indium
                                       jedi
                                       jedi-core
+                                      mocha-snippets
                                       multicolumn
                                       ob-async
                                       (ob-erlang :location (recipe :fetcher github :repo "B7rian/ob-erlang"))
@@ -311,7 +316,7 @@ This function should only modify configuration layer settings."
    ;; installs only the used packages but won't delete unused ones. `all'
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-but-keep-unused))
+   dotspacemacs-install-packages 'used-only))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -444,7 +449,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil, show file icons for entries and headings on Spacemacs home buffer.
    ;; This has no effect in terminal or if "all-the-icons" package or the font
    ;; is not installed. (default nil)
-   dotspacemacs-startup-buffer-show-icons nil
+   dotspacemacs-startup-buffer-show-icons t
 
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
@@ -469,8 +474,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light
-                         solarized-dark)
+   dotspacemacs-themes '(modus-operandi
+                         modus-vivendi)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -489,7 +494,7 @@ It should only modify the values of Spacemacs settings."
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
    dotspacemacs-default-font '("Input Sans"
-                               :size 13.0
+                               :size 18.0
                                :weight normal
                                :width normal)
 
@@ -964,7 +969,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
            (org-drawer :inherit fixed-pitch :height 0.6)
            (org-priority :family "Input Sans Condensed" :height 0.7 :weight normal)
            ;; (org-priority :family "monospace" :height 0.7 :weight normal)
-           (line-number :family "Input Mono Narrow Liga")
+           (line-number :family "Input Mono Condensed")
+           (line-number-current-line :inherit line-number)
            (org-link
            :inherit org-table
            :underline t)
@@ -1024,7 +1030,7 @@ before packages are loaded."
     (spacemacs|use-package-add-hook org
       :post-config
       ;; This was working berfore but now freezes when opening org files with js source blocks. It is eslint_d's fault. lets try again.
-      ;; (nnconc org-src-lang-modes '(("js" . js2)))
+      (nconc org-src-lang-modes '(("js" . js2)))
       ;; (nconc org-babel-load-languages
       ;;        '((ditaa . t)
       ;;          (erlang . t)
@@ -1032,11 +1038,13 @@ before packages are loaded."
       ;;          (lilypond . t)
       ;;          (lisp . t)
       ;;          (org . t)))
-      (setenv "NODE_PATH"
-              (concat
-               "/usr/local/src/emacs/org/babel_local/node_modules" ":"
-               (getenv "NODE_PATH")
-               )))
+
+      ;; (setenv "NODE_PATH"
+      ;;         (concat
+      ;;          "/usr/local/src/emacs/org/babel_local/node_modules" ":"
+      ;;          (getenv "NODE_PATH")
+      ;;          ))
+      )
     (use-package org
       :defer t
       :config
@@ -1366,6 +1374,7 @@ before packages are loaded."
     (dap-firefox-debug-program `("node"
                                  ,(f-join dap-firefox-debug-path
                                           "dist/adapter.bundle.js")))
+    (lsp-eslint-package-manager 'pnpm)
     ;; (lsp-eslint-server-command
     ;;  `("node"
     ;;    ,(expand-file-name (first (file-expand-wildcards "~/.vscode-insiders/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js")))
@@ -1402,14 +1411,14 @@ before packages are loaded."
     :custom
     (ein:polymode))
 
-  ;; Temporary comment while I figure out why eslint_d freezes
   ;; (use-package eslintd-fix
   ;;   :hook
   ;;   (js2-mode eslintd-fix-mode))
 
   (use-package context-coloring
     :defer t
-    :hook ((js2-mode emacs-lisp-mode eval-expression-minibuffer-setup) . context-coloring-mode))
+    ;; :hook ((js2-mode emacs-lisp-mode eval-expression-minibuffer-setup) . context-coloring-mode)
+    )
   (use-package erlang
     :defer t
     :custom
@@ -1419,7 +1428,6 @@ before packages are loaded."
     :hook
     (text-mode . variable-pitch-mode))
 
-  ;; temporary comment while I figure why eslint_d eslintd-fix freezes
   (use-package flycheck
     :defer t
     :custom
