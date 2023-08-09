@@ -278,6 +278,9 @@ This function should only modify configuration layer settings."
                                       (org-critical-edition :location (recipe
                                                                        :fetcher gitlab
                                                                        :repo "maciaschain/org-critical-edition"))
+                                      (org-cv :location (recipe
+                                                         :fetcher gitlab
+                                                         :repo "Titan-C/org-cv"))
                                       (org-protocol-capture-html :location (recipe
                                                                             :fetcher github
                                                                             :repo "alphapapa/org-protocol-capture-html"))
@@ -1044,6 +1047,8 @@ before packages are loaded."
       ;;          "/usr/local/src/emacs/org/babel_local/node_modules" ":"
       ;;          (getenv "NODE_PATH")
       ;;          ))
+
+      (require 'ox-awesomecv)
       )
     (use-package org
       :defer t
@@ -1216,6 +1221,10 @@ before packages are loaded."
       :defer t
       :custom
       (org-export-with-date nil))
+    (use-package ox-awesomecv
+      :defer t
+      :after ox
+      :init (require 'ox-awesomecv))
     (use-package ox-html
       :defer t
       :custom
@@ -1295,7 +1304,8 @@ before packages are loaded."
       ;; `$pdf_mode = 4' in /etc/latexmk.conf which according to latexmk docs
       ;; means tu use lualatex by default and it seems to work too. I also must
       ;; change the default value of `TeX-engine' from default to luatex.
-      (org-latex-compiler "lualatex")))
+      (org-latex-compiler "lualatex"))
+    )
 
   (setq prettify-symbols-unprettify-at-point t)
   (global-prettify-symbols-mode +1)
