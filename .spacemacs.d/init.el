@@ -98,7 +98,8 @@ This function should only modify configuration layer settings."
               ;; clojure-enable-sayid t
               ;; clojure-enable-clj-refactor t
               clojure-enable-fancify-symbols t
-              clojure-enable-linters 'clj-kondo)
+              clojure-enable-linters '(clj-kondo joker)
+              clojure-enable-kaocha-runner t)
      ;; Does this layer fail on a brand new spacemacs installation?
      csv
      dap
@@ -206,6 +207,7 @@ This function should only modify configuration layer settings."
       ;; python-shell-interpreter "jupyter"
       ;; python-shell-interpreter-args "console --simple-prompt"
       ;; python-shell-interpreter-args ""
+      python-test-runner 'pytest
       )
      (ipython-notebook :variables ein-backend 'jupyter)
      ;; (ipython-notebook
@@ -228,6 +230,7 @@ This function should only modify configuration layer settings."
      scheme
      shadowenv
      (shell-scripts :variables shell-scripts-backend nil)
+     sml
      (sql :variables sql-capitalize-keywords t)
      systemd
      themes-megapack
@@ -319,7 +322,7 @@ This function should only modify configuration layer settings."
    ;; installs only the used packages but won't delete unused ones. `all'
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-only))
+   dotspacemacs-install-packages 'used-but-keep-unused))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -574,6 +577,10 @@ It should only modify the values of Spacemacs settings."
    ;; Which-key frame position. Possible values are `right', `bottom' and
    ;; `right-then-bottom'. right-then-bottom tries to display the frame to the
    ;; right; if there is insufficient space it displays it at the bottom.
+   ;; It is also possible to use a posframe with the following cons cell
+   ;; `(posframe . position)' where position can be one of `center',
+   ;; `top-center', `bottom-center', `top-left-corner', `top-right-corner',
+   ;; `top-right-corner', `bottom-left-corner' or `bottom-right-corner'
    ;; (default 'bottom)
    dotspacemacs-which-key-position 'bottom
 
@@ -660,7 +667,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -1378,6 +1385,7 @@ before packages are loaded."
     ;; Throws error
     ;; json-mode
     ;; latex-mode
+    ;; sml-mode
     ;; )
     ;; lsp)
     :custom
@@ -1385,6 +1393,13 @@ before packages are loaded."
                                  ,(f-join dap-firefox-debug-path
                                           "dist/adapter.bundle.js")))
     (lsp-eslint-package-manager 'pnpm)
+    (lsp-clients-angular-language-server-command
+     '("ngserver"
+       "--ngProbeLocations"
+       "/Users/eze/Library/pnpm/global/5/node_modules"
+       "--tsProbeLocations"
+       "/Users/eze/Library/pnpm/global/5/node_modules"
+       "--stdio"))
     ;; (lsp-eslint-server-command
     ;;  `("node"
     ;;    ,(expand-file-name (first (file-expand-wildcards "~/.vscode-insiders/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js")))
@@ -1492,6 +1507,15 @@ before packages are loaded."
   ;; (use-package rubocopfmt
   ;;   :defer t
   ;;   :custom (rubocopfmt-use-bundler-when-possible nil))
+
+  ;; experiments with millet. This doesn't work so far.
+  ;; (use-package sml-mode
+  ;;   :after lsp
+  ;;   :config
+  ;;   (lsp-register-client
+  ;;    (make-lsp-client :new-connection (lsp-stdio-connection "/Users/eze/.local/bin/millet")
+  ;;                     :major-modes '(sml-mode)
+  ;;                     :server-id 'lsp-sml)))
 
   ;; https://github.com/orzechowskid/tsi.el/
   ;; great tree-sitter-based indentation for typescript/tsx, css, json
