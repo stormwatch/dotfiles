@@ -22,3 +22,11 @@ typescript-eslint-language-service
 typescript-language-server
 vscode-langservers-extracted
 yaml-language-server
+
+## Documenting additional potential default packages from https://github.com/otavioschwanck/doom-emacs-on-rails
+#@tailwindcss/language-server@0.0.4
+#stylelint
+
+## Angular https://github.com/emacs-lsp/lsp-mode/wiki/Install-Angular-Language-server
+@angular/language-service@next
+@angular/language-server
