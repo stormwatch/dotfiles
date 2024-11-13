@@ -1393,13 +1393,13 @@ before packages are loaded."
                                  ,(f-join dap-firefox-debug-path
                                           "dist/adapter.bundle.js")))
     (lsp-eslint-package-manager 'pnpm)
-    (lsp-clients-angular-language-server-command
-     '("ngserver"
-       "--ngProbeLocations"
-       "/Users/eze/Library/pnpm/global/5/node_modules"
-       "--tsProbeLocations"
-       "/Users/eze/Library/pnpm/global/5/node_modules"
-       "--stdio"))
+    ;; (lsp-clients-angular-language-server-command
+    ;;  '("ngserver"
+    ;;    "--ngProbeLocations"
+    ;;    "/Users/eze/Library/pnpm/global/5/node_modules"
+    ;;    "--tsProbeLocations"
+    ;;    "/Users/eze/Library/pnpm/global/5/node_modules"
+    ;;    "--stdio"))
     ;; (lsp-eslint-server-command
     ;;  `("node"
     ;;    ,(expand-file-name (first (file-expand-wildcards "~/.vscode-insiders/extensions/dbaeumer.vscode-eslint-*/server/out/eslintServer.js")))
