@@ -1,0 +1,14 @@
+#!/bin/bash
+configDirectory="$HOME/.config/Cuis"
+vm="$HOME/.local/src/Smalltalk/Cuis University/SqueakLiveTyping.app/Contents/MacOS/Squeak"
+imageDirectory="$HOME/.local/src/Smalltalk/Cuis University"
+
+cd "$imageDirectory"
+if [ -z "$1" ]; then
+    image=`find . -maxdepth 1 -regex '.*-[0-9]*.*image' -print | sort -r | head -n1`
+    startUp="-s $configDirectory/*.st"
+else
+    image=$1
+fi
+
+exec "$vm" "$image" $startUp

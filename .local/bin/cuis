@@ -1,0 +1,17 @@
+#!/bin/bash
+export DYLD_LIBRARY_PATH="$(brew --prefix)/lib:${DYLD_LIBRARY_PATH}"
+configDirectory="$HOME/.config/Cuis"
+vm="$HOME/.local/src/Smalltalk/Cuis/Cuis-Smalltalk-Dev/CuisVM.app/Contents/MacOS/Squeak"
+imageDirectory="$HOME/.local/src/Smalltalk/Cuis/Cuis-Smalltalk-Dev/CuisImage"
+options="-u"
+
+cd "$imageDirectory"
+if [ -z "$1" ]; then
+    image=`find . -maxdepth 1 -regex '.*-[0-9]*.*image' -print | sort -r | head -n1`
+    startUp="-s $configDirectory/*.st"
+else
+    image=$1
+fi
+
+echo "$vm" "$image" $options $startUp
+exec "$vm" "$image" $options $startUp
