@@ -1,0 +1,5 @@
+[tools]
+node = { version = "latest", postinstall = "corepack enable pnpm && pnpm self-update" }
+ruby = { version = "latest", postinstall = "ruby-post-install" } # See https://github.com/stormwatch/dotfiles/blob/master/.local/bin/ruby-post-install
+java = "graalvm-22.3.3+java17"
+python = "latest"
