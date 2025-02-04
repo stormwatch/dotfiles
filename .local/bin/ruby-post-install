@@ -1,0 +1,11 @@
+#!/bin/bash
+
+gem update --system
+
+cd
+if [ $(uname -s) = "Darwin" ]; then
+  bundle plugin install bundler-mac
+fi
+gem install bundler-symlink
+bundle plugin install bundler-symlink
+
