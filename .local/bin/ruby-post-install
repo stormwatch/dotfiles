@@ -1,11 +1,16 @@
 #!/bin/bash
 
+function reinstallBundlerPlugin () {
+  bundle plugin uninstall "$@"
+  bundle plugin install "$@"  
+}
+
 gem update --system
 
 cd
 if [ $(uname -s) = "Darwin" ]; then
-  bundle plugin install bundler-mac
+  reinstallBundlerPlugin bundler-mac
 fi
-gem install bundler-symlink
-bundle plugin install bundler-symlink
 
+gem install bundler-symlink
+reinstallBundlerPlugin bundler-symlink
