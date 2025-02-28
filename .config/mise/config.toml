@@ -3,3 +3,10 @@ node = { version = "latest", postinstall = "corepack enable pnpm && pnpm self-up
 ruby = { version = "latest", postinstall = "ruby-post-install" } # See https://github.com/stormwatch/dotfiles/blob/master/.local/bin/ruby-post-install
 java = "graalvm-22.3.3+java17"
 python = "latest"
+usage = "latest"
+"pipx:opentype-feature-freezer" = "latest"
+"pipx:yt-dlp" = "latest"
+"pipx:streamlink" = "latest"
+
+[settings]
+experimental = true
