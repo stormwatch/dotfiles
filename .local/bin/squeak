@@ -1,0 +1,15 @@
+#!/bin/bash
+configurationDirectory="$HOME/.config/Squeak"
+virtualMachine="$HOME/.local/src/Smalltalk/OpenSmalltalk/Squeak.app/Contents/MacOS/Squeak"
+imageDirectory="$HOME/.local/src/Smalltalk/Squeak/images"
+
+function setImage() {
+    image=`find . -maxdepth 1 -regex '.*/Squeak.*\.image' -print | sort -r | head -n1`
+}
+
+function setStartUp() {
+    startUpFiles=("$configurationDirectory"/*.st)
+    printf -v startUp -- " --filein %s" "${startUpFiles[@]}"
+}
+
+source smalltalkCommon.sh

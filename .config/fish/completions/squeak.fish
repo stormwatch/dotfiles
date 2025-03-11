@@ -1,1 +1,1 @@
-completeImagesForSmalltalkNamedInDirectory squeak /Users/eze/.local/src/Smalltalk/Squeak
+completeImagesForSmalltalkNamedInDirectory squeak /Users/eze/.local/src/Smalltalk/Squeak/images

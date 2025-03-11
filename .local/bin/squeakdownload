@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -euo pipefail
+
+imageDirectory=~/.local/src/Smalltalk/Squeak/images
+imageFile=Squeak-latest-64bit.zip
+cd "$imageDirectory"
+curl --silent --show-error --output $imageFile https://files.squeak.org/nightly/$imageFile
+7zz x $imageFile -aoa
+rm $imageFile
