@@ -1,14 +1,16 @@
 #!/bin/bash
-configDirectory="$HOME/.config/Cuis"
-vm="$HOME/.local/src/Smalltalk/Cuis University/SqueakLiveTyping.app/Contents/MacOS/Squeak"
+
+configurationDirectory="$HOME/.config/CuisUniversity"
 imageDirectory="$HOME/.local/src/Smalltalk/Cuis University"
+virtualMachine="$imageDirectory/SqueakLiveTyping.app/Contents/MacOS/Squeak"
 
-cd "$imageDirectory"
-if [ -z "$1" ]; then
-    image=`find . -maxdepth 1 -regex '.*-[0-9]*.*image' -print | sort -r | head -n1`
-    startUp="-s $configDirectory/*.st"
-else
-    image=$1
-fi
+function setImage() {
+    image=`find . -maxdepth 1 -regex '.*CuisUniversity-[0-9]*.*image' -print | sort --reverse | head --lines=1`
+}
 
-exec "$vm" "$image" $startUp
+function setStartUp() {
+    startUpFiles=("$configurationDirectory"/*.st)
+    printf -v startUp -- " -s %s" "${startUpFiles[@]}"
+}
+
+source smalltalkCommon.sh
