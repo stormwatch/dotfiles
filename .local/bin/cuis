@@ -2,10 +2,10 @@
 
 configurationDirectory="$HOME/.config/Cuis"
 virtualMachine="$HOME/.local/src/Smalltalk/Cuis/Cuis-Smalltalk-Dev/CuisVM.app/Contents/MacOS/Squeak"
-imageDirectory="$HOME/.local/src/Smalltalk/Cuis/Cuis-Smalltalk-Dev/CuisImage"
+workingDirectory="$HOME/.local/src/Smalltalk/Cuis/Cuis-Smalltalk-Dev"
 
 function setImage() {
-    image=`find . -maxdepth 1 -regex '.*Cuis.*-[0-9]*.*\.image' -print | sort --reverse | head --lines=1`
+    image=`find ./CuisImage -maxdepth 1 -regex '.*Cuis.*-[0-9]*.*\.image' -print | sort --reverse | head --lines=1`
 }
 
 function setStartUp() {

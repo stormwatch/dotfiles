@@ -1,8 +1,8 @@
 #!/bin/bash
 
 configurationDirectory="$HOME/.config/CuisUniversity"
-imageDirectory="$HOME/.local/src/Smalltalk/Cuis University"
-virtualMachine="$imageDirectory/SqueakLiveTyping.app/Contents/MacOS/Squeak"
+workingDirectory="$HOME/.local/src/Smalltalk/Cuis University"
+virtualMachine="$workingDirectory/SqueakLiveTyping.app/Contents/MacOS/Squeak"
 
 function setImage() {
     image=`find . -maxdepth 1 -regex '.*CuisUniversity-[0-9]*.*image' -print | sort --reverse | head --lines=1`

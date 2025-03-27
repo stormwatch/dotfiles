@@ -5,7 +5,7 @@ if which -s brew; then
     export DYLD_LIBRARY_PATH="$(brew --prefix)/lib:${DYLD_LIBRARY_PATH}"
 fi
 
-cd "$imageDirectory"
+cd "$workingDirectory"
 if [[ "$1" == -* ]] || [ -z "$1" ]; then
     setImage
     setStartUp

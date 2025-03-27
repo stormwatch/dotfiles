@@ -1,10 +1,10 @@
 #!/bin/bash
 configurationDirectory="$HOME/.config/Squeak"
 virtualMachine="$HOME/.local/src/Smalltalk/OpenSmalltalk/Squeak.app/Contents/MacOS/Squeak"
-imageDirectory="$HOME/.local/src/Smalltalk/Squeak/images"
+workingDirectory="$HOME/.local/src/Smalltalk/Squeak/images"
 
 function setImage() {
-    image=`find . -maxdepth 1 -regex '.*/Squeak.*\.image' -print | sort -r | head -n1`
+    image=`find "$workingDirectory" -maxdepth 1 -regex '.*/Squeak[0-9].*\.image' | sort -r | head -n1`
 }
 
 function setStartUp() {
