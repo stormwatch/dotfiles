@@ -1,4 +1,5 @@
 function allAbbreviations
+  cuisAbbreviations
   bundleAbbreviations
   brewAbbreviations
   duAbbreviations
