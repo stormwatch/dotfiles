@@ -1,3 +1,3 @@
 function inIterm
-  test $TERM_PROGRAM = 'iTerm.app'
+  test "$TERM_PROGRAM" = iTerm.app
 end
