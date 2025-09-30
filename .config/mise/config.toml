@@ -1,12 +1,28 @@
 [tools]
-node = { version = "latest", postinstall = "corepack enable pnpm && pnpm self-update" }
-ruby = { version = "latest", postinstall = "ruby-post-install" } # See https://github.com/stormwatch/dotfiles/blob/master/.local/bin/ruby-post-install
-java = "graalvm-22.3.3+java17"
-python = "latest"
+java = { version = "oracle-graalvm-24.0.1", release_type = "ea" }
+"asdf:joschi/asdf-mvnd" = "latest"
+
+node = { version = "latest", postinstall = "corepack enable pnpm" }
+ruby = { version = "latest", postinstall = "ruby-post-install" }
 usage = "latest"
+
 "pipx:opentype-feature-freezer" = "latest"
 "pipx:yt-dlp" = "latest"
 "pipx:streamlink" = "latest"
+gradle = "latest"
+uv = "latest"
+cargo-binstall = "latest"
+"cargo:eza" = "latest"
+"cargo:skim" = "latest"
+"cargo:ripgrep" = "latest"
+"pipx:pytest" = "latest"
+erlang = "latest"
+elixir = "latest"
+"cargo:fd-find" = "latest"
 
 [settings]
 experimental = true
+idiomatic_version_file_enable_tools = ["ruby", "node"]
+
+[settings.python]
+uv_venv_auto = false
